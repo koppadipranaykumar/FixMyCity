@@ -1,0 +1,142 @@
+/* Dashboard.css */
+
+/* Reset default margin/padding */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #e0ecf8, #ffffff);
+  height: 100vh;
+}
+
+/* Fixed Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background-color: #ffffffcc;
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* padding: 0 px; */
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo and Title */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 8px
+}
+
+.navbar-logo {
+  height: 34px;
+  width: auto;
+  object-fit:contain
+}
+
+.navbar-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Navigation Buttons */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-actions button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #333;
+  margin-left: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.nav-actions button:hover {
+  transform: scale(1.15);
+  color: #007bff;
+}
+.theme-btn,
+.status-btn,
+.profile-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #333;
+}
+
+
+/* Main content spacing */
+.dashboard-body {
+  padding-top: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 100px);
+}
+
+/* Glass effect container */
+.dashboard-container {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 2.5rem 3.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%;
+  max-width: 450px;
+}
+
+/* Headings */
+.dashboard-container h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.dashboard-container p {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Buttons */
+.dashboard-button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-top: 0.75rem;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dashboard-button:hover {
+  background-color: #0056b3;
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    padding: 0 1rem;
+  }
+
+  .dashboard-container {
+    padding: 2rem;
+  }
+}
