@@ -35,7 +35,7 @@ console.log("userRoutes typeof:", typeof userRoutes);
 console.log("issueRoutes typeof:", typeof issueRoutes);
 
 app.use(express.json()); // ✅ Add this line to parse JSON for all routes that follow, or keep it per route as you had.
-                         // Using it globally here is common practice before route definitions.
+ // Using it globally here is common practice before route definitions.
 
 app.use('/api/auth', authRoutes); // express.json() is now global, no need to add here
 app.use('/api/user', userRoutes); // express.json() is now global, no need to add here
