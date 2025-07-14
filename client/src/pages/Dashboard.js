@@ -5,6 +5,7 @@ import ReportIssueForm from '../components/ReportIssueForm';
 import ViewAllIssues from '../components/ViewAllIssues';
 import logo from '../assets/logo.png';
 import { FaSun, FaClipboardList } from 'react-icons/fa';
+import API from '../api'; 
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -32,20 +33,24 @@ const Dashboard = () => {
 
   const handleIssueSubmit = async (formData) => {
     try {
-      const response = await fetch('http://localhost:5000/api/issues', {
-        method: 'POST',
-        body: formData,
-      });
+        const response = await API.post('/issues', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data', // Crucial for file uploads with FormData
+            },
+        });
 
-      const data = await response.json();
-      alert('Issue reported successfully!');
-      // After submission, navigate back to the home page
-      window.history.pushState({}, '', '/dashboard');
-      setPath('/dashboard');
+        // Axios puts the response data in the 'data' property
+        const data = response.data; 
+        alert('Issue reported successfully!');
+        // After submission, navigate back to the home page
+        window.history.pushState({}, '', '/dashboard');
+        setPath('/dashboard');
     } catch (error) {
-      alert('fail to report issue');
+        console.error('Failed to report issue:', error); // Log the actual error for better debugging
+        // Provide more informative alert to the user
+        alert('Fail to report issue: ' + (error.response?.data?.message || error.message || 'Please check console for details.'));
     }
-  };
+};
 
   const navigate = (newPath) => {
     window.history.pushState({}, '', newPath);
