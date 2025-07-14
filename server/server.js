@@ -11,7 +11,7 @@ const app = express();
 
 // --- START OF CORS CONFIGURATION ---
 const corsOptions = {
-  origin: 'https://fix-my-city-2dcaaagg4-pranay-kumars-projects-47ea3258.vercel.app', // ✅ Your Vercel frontend URL
+  origin: 'https://fix-my-city-qcfif4m0z-pranay-kumars-projects-47ea3258.vercel.app', // ✅ Your Vercel frontend URL
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // If your frontend sends cookies or auth headers
   optionsSuccessStatus: 204
