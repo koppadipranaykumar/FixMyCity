@@ -13,7 +13,7 @@ const LoginForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await API.post('/api/auth/login', formData);
+      const res = await API.post('/auth/login', formData);
       localStorage.setItem('token', res.data.token);
      
       navigate('/dashboard');
