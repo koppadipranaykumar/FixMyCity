@@ -33,11 +33,12 @@ const Dashboard = () => {
 
   const handleIssueSubmit = async (formData) => {
     try {
-        const response = await API.post('/issues', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data', // Crucial for file uploads with FormData
-            },
-        });
+        await API.post('/issues', formData, {
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
+});
+
 
         // Axios puts the response data in the 'data' property
         
