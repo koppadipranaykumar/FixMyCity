@@ -13,7 +13,7 @@ const UserMenu = ({ user, onLogout, updateUser }) => {
 
   const handleUpdate = async () => {
     try {
-      const res = await API.put('/api/auth/update-profile', {
+      const res = await API.put('/auth/update-profile', {
         email: user.email,
         name,
         password,

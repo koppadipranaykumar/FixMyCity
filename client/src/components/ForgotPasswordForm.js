@@ -9,7 +9,7 @@ const ForgotPasswordForm = () => {
 
   const sendOTP = async () => {
     try {
-      await API.post('/api/auth/send-otp', { email });
+      await API.post('/auth/send-otp', { email });
       alert('OTP sent to your email!');
       setStep(2);
     } catch (err) {
@@ -19,7 +19,7 @@ const ForgotPasswordForm = () => {
 
   const verifyOTPAndReset = async () => {
     try {
-      await API.post('/api/auth/verify-otp', {
+      await API.post('/auth/verify-otp', {
         email,
         otp,
         newPassword
