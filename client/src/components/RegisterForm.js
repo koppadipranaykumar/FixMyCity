@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
+import API from '../api';
 const RegisterForm = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
 
@@ -10,7 +10,7 @@ const RegisterForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/api/auth/register', formData);
+      const res = await API.post('/api/auth/register', formData);
       localStorage.setItem('token', res.data.token);
       alert('Registration successful');
       // Redirect logic (optional)

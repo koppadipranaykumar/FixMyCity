@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import './UserMenu.css';
 import { FaUserCircle } from 'react-icons/fa';
 import { FiEdit, FiLogOut } from 'react-icons/fi';
-import axios from 'axios';
+import API from '../api';
 
 const UserMenu = ({ user, onLogout, updateUser }) => {
   const [showModal, setShowModal] = useState(false);
@@ -13,7 +13,7 @@ const UserMenu = ({ user, onLogout, updateUser }) => {
 
   const handleUpdate = async () => {
     try {
-      const res = await axios.put('/api/auth/update-profile', {
+      const res = await API.put('/api/auth/update-profile', {
         email: user.email,
         name,
         password,

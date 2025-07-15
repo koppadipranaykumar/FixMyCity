@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import API from '../api';
 
 const ForgotPasswordForm = () => {
   const [step, setStep] = useState(1); // Step 1: send OTP, Step 2: verify OTP
@@ -9,7 +9,7 @@ const ForgotPasswordForm = () => {
 
   const sendOTP = async () => {
     try {
-      await axios.post('/api/auth/send-otp', { email });
+      await API.post('/api/auth/send-otp', { email });
       alert('OTP sent to your email!');
       setStep(2);
     } catch (err) {
@@ -19,7 +19,7 @@ const ForgotPasswordForm = () => {
 
   const verifyOTPAndReset = async () => {
     try {
-      await axios.post('/api/auth/verify-otp', {
+      await API.post('/api/auth/verify-otp', {
         email,
         otp,
         newPassword
