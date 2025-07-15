@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './ViewAllIssues.css';
 import { FaTrash } from 'react-icons/fa';
 
+const API_BASE = process.env.REACT_APP_API_BASE_URL;
+
 const ViewAllIssues = () => {
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +12,7 @@ const ViewAllIssues = () => {
   useEffect(() => {
     const fetchIssues = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/issues');
+        const res = await fetch(`${API_BASE}/api/issues`);
         const data = await res.json();
         setIssues(data.reverse()); // latest first
       } catch (err) {
@@ -27,7 +29,7 @@ const ViewAllIssues = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this issue?')) return;
 
-    const res = await fetch(`http://localhost:5000/api/issues/${id}`, {
+    const res = await fetch(`${API_BASE}/api/issues/${id}`, {
       method: 'DELETE',
     });
 
@@ -53,7 +55,7 @@ const ViewAllIssues = () => {
             <div key={issue._id} className="issue-card">
               {issue.photo && (
                 <img
-                  src={`http://localhost:5000/uploads/${issue.photo}`}
+                  src={`${API_BASE}/uploads/${issue.photo}`}
                   alt="Reported Issue"
                   className="issue-photo"
                 />
