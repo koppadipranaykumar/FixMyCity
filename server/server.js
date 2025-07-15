@@ -8,18 +8,13 @@ dotenv.config(); // Load environment variables
 connectDB(); // Connect to MongoDB
 
 const app = express();
-
-// --- START OF CORS CONFIGURATION ---
 const corsOptions = {
-  origin: 'https://bright-tartufo-c3a91f.netlify.app',
+  origin: 'https://bright-tartufo-c3a91f.netlify.app', // ✅ your Netlify domain
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
-  optionsSuccessStatus: 204
 };
+app.use(cors(corsOptions));
 
-
-app.use(cors(corsOptions)); // ✅ Use CORS with your specific options
-// --- END OF CORS CONFIGURATION ---
 
 // Serve uploaded images (Keep this if you have image uploads)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
