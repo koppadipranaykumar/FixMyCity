@@ -11,11 +11,12 @@ const app = express();
 
 // --- START OF CORS CONFIGURATION ---
 const corsOptions = {
-  origin: 'https://fix-my-city-qcfif4m0z-pranay-kumars-projects-47ea3258.vercel.app', // ✅ Your Vercel frontend URL
+  origin: 'https://bright-tartufo-c3a91f.netlify.app',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true, // If your frontend sends cookies or auth headers
+  credentials: true,
   optionsSuccessStatus: 204
 };
+
 
 app.use(cors(corsOptions)); // ✅ Use CORS with your specific options
 // --- END OF CORS CONFIGURATION ---
