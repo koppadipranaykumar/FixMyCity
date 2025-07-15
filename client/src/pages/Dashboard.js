@@ -40,7 +40,7 @@ const Dashboard = () => {
         });
 
         // Axios puts the response data in the 'data' property
-        const data = response.data; 
+        
         alert('Issue reported successfully!');
         // After submission, navigate back to the home page
         window.history.pushState({}, '', '/dashboard');
