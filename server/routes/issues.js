@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const upload = require('../middleware/upload');
-const Issue = require('../models/issue');
+const Issue = require('../models/Issue');
 
 
 // POST - submit issue
