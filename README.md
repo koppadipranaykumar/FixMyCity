@@ -8,8 +8,8 @@ It features a modern interface for both users and admins, and includes login, is
 
 ## 🔗 Live Demo
 
-- **Frontend (React):** [https://fixmycity.vercel.app](https://fixmycity.vercel.app) *(Update after deployment)*
-- **Backend (Express API):** [https://fixmycity-api.onrender.com](https://fixmycity-api.onrender.com) *(Update after deployment)*
+- **Frontend (React):**    [https://bright-tartufo-c3a91f.netlify.app/](https://bright-tartufo-c3a91f.netlify.app/)
+- **Backend (Express API):** [https://fixmycity-ebqz.onrender.com](https://fixmycity-ebqz.onrender.com) 
 
 ---
 
@@ -58,6 +58,23 @@ It features a modern interface for both users and admins, and includes login, is
 
 ---
 
+
+<img width="1366" height="768" alt="Screenshot (254)" src="https://github.com/user-attachments/assets/2772d284-eefa-4d42-bbd8-d938b15466f5" />
+
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/e879fae3-7357-4f7d-a065-b1a7dcaf300f" />
+
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/a890e112-79e6-467d-9182-c29c95995731" />
+
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/b55ab452-1e99-46c8-8274-dbe09ae877d3" />
+
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/35212612-033c-40be-aecd-7dfb1f264ebb" />
+
+
+This website can be taken more further for the future needs and availability 
+Feel free to Contribute towards this website 
+
+
+
 ## 🚀 Getting Started (Local Setup)
 
 ### 1. Clone the Repo
@@ -65,3 +82,5 @@ It features a modern interface for both users and admins, and includes login, is
 ```bash
 git clone https://github.com/koppadipranaykumar/FixMyCity.git
 cd FixMyCity
+
+
