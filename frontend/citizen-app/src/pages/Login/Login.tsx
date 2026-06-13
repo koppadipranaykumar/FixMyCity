@@ -5,85 +5,100 @@ import "./Login.css";
 
 function Login() {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/auth/login",
-        {
-          email,
-          password,
-        }
-      );
-
+      const response = await axios.post("http://localhost:8080/api/auth/login", { email, password });
       setMessage(response.data);
-
+      setIsError(false);
       if (response.data === "Login Successful") {
         localStorage.setItem("userEmail", email);
-
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
+        setTimeout(() => navigate("/"), 1000);
       }
-    } catch (error) {
-      setMessage("Login Failed");
+    } catch {
+      setMessage("Invalid email or password. Please try again.");
+      setIsError(true);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="login-page">
-      <div className="login-card">
+    <div className="auth-page">
+      {/* Left panel */}
+      <div className="auth-left">
+        <div className="auth-left-content">
+          <div className="auth-brand">
+            <span className="auth-brand-icon">📍</span>
+            <span className="auth-brand-name">FixMyCity</span>
+          </div>
+          <h2>Making cities better,<br />together.</h2>
+          <p>Join thousands of citizens actively reporting and resolving civic issues across Hyderabad.</p>
+          <div className="auth-stats">
+            <div className="auth-stat"><strong>500+</strong><span>Issues Reported</span></div>
+            <div className="auth-stat"><strong>320+</strong><span>Resolved</span></div>
+            <div className="auth-stat"><strong>1K+</strong><span>Citizens</span></div>
+          </div>
+        </div>
+      </div>
 
-        <h1>Login</h1>
-
-        <form onSubmit={handleLogin}>
-
-          <input
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
-            required
-          />
-
-          <button type="submit">
-            Login
+      {/* Right panel */}
+      <div className="auth-right">
+        <div className="auth-card">
+          <button className="back-btn" onClick={() => navigate("/")}>
+            ← Back to Home
           </button>
+          <div className="auth-card-header">
+            <h1>Welcome back</h1>
+            <p>Sign in to your FixMyCity account</p>
+          </div>
 
-        </form>
+          <form onSubmit={handleLogin} className="auth-form">
+            <div className="field-group">
+              <label>Email Address</label>
+              <input
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-        {message && (
-          <p className="message">
-            {message}
+            <div className="field-group">
+              <label>Password</label>
+              <input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <button type="submit" className="auth-submit-btn" disabled={loading}>
+              {loading ? "Signing in…" : "Sign In"}
+            </button>
+          </form>
+
+          {message && (
+            <div className={`auth-message ${isError ? "error" : "success"}`}>
+              {isError ? "⚠ " : "✓ "}{message}
+            </div>
+          )}
+
+          <p className="auth-switch">
+            Don't have an account?{" "}
+            <Link to="/register">Create one</Link>
           </p>
-        )}
-
-        <p className="bottom-text">
-          Don't have an account?{" "}
-          <Link to="/register">
-            Register
-          </Link>
-        </p>
-
+        </div>
       </div>
     </div>
   );

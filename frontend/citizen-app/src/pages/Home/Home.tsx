@@ -135,7 +135,7 @@ function Home() {
         <div className="hero-buttons">
           <button
             className="primary-btn"
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/report")}
           >
             Report an Issue →
           </button>
