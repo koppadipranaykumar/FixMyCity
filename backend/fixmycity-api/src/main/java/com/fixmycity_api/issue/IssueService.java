@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -18,9 +19,13 @@ public class IssueService {
         this.issueRepository = issueRepository;
     }
 
+    // GET ALL ISSUES
+
     public List<Issue> getAllIssues() {
         return issueRepository.findAll();
     }
+
+    // CREATE ISSUE
 
     public String createIssue(
             String title,
@@ -38,8 +43,8 @@ public class IssueService {
 
             String fileName =
                     System.currentTimeMillis()
-                    + "_"
-                    + image.getOriginalFilename();
+                            + "_"
+                            + image.getOriginalFilename();
 
             Path uploadPath = Paths.get(
                     "C:\\Users\\Pranay Kumar\\Desktop\\FixMyCity\\backend\\fixmycity-api\\uploads"
@@ -53,7 +58,6 @@ public class IssueService {
                     StandardCopyOption.REPLACE_EXISTING
             );
 
-            // Store only filename for now
             imageUrl = fileName;
         }
 
@@ -69,10 +73,115 @@ public class IssueService {
 
         issue.setImageUrl(imageUrl);
 
-        issue.setStatus("REPORTED");
+        issue.setStatus("Reported");
+
+        issue.setReportedAt(
+                LocalDateTime.now()
+        );
 
         issueRepository.save(issue);
 
         return "Issue Submitted Successfully";
+    }
+
+    // ASSIGN WORKER
+
+    public Issue assignWorker(
+            Long issueId,
+            String workerName
+    ) {
+
+        Issue issue = issueRepository
+                .findById(issueId)
+                .orElseThrow();
+
+        issue.setAssignedWorker(workerName);
+
+        issue.setStatus("In Progress");
+
+        return issueRepository.save(issue);
+    }
+
+    // RESOLVE ISSUE
+
+    public Issue resolveIssue(
+            Long issueId,
+            String note,
+            String proofImage
+    ) {
+
+        Issue issue = issueRepository
+                .findById(issueId)
+                .orElseThrow();
+
+        issue.setStatus("Resolved");
+
+        issue.setResolutionNote(note);
+
+        issue.setProofImage(proofImage);
+
+        issue.setResolvedAt(
+                LocalDateTime.now()
+        );
+
+        return issueRepository.save(issue);
+    }
+    public Issue resolveIssueWithProof(
+            Long issueId,
+            String note,
+            MultipartFile proofImage
+    ) throws Exception {
+
+        Issue issue = issueRepository
+                .findById(issueId)
+                .orElseThrow();
+
+        String fileName = null;
+
+        if (
+            proofImage != null &&
+            !proofImage.isEmpty()
+        ) {
+
+            fileName =
+                    System.currentTimeMillis()
+                    + "_"
+                    + proofImage.getOriginalFilename();
+
+            Path uploadPath =
+                    Paths.get(
+                            "C:\\Users\\Pranay Kumar\\Desktop\\FixMyCity\\backend\\fixmycity-api\\uploads"
+                    );
+
+            Files.createDirectories(
+                    uploadPath
+            );
+
+            Files.copy(
+                    proofImage.getInputStream(),
+                    uploadPath.resolve(fileName),
+                    StandardCopyOption.REPLACE_EXISTING
+            );
+        }
+
+        issue.setStatus("Resolved");
+
+        issue.setResolutionNote(note);
+
+        issue.setProofImage(fileName);
+
+        issue.setResolvedAt(
+                LocalDateTime.now()
+        );
+
+        return issueRepository.save(issue);
+    }
+    // DELETE ISSUE
+
+    public void deleteIssue(
+            Long issueId
+    ) {
+
+        issueRepository.deleteById(issueId);
     }
 }

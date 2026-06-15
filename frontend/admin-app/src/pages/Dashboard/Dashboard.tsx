@@ -14,32 +14,53 @@ function Dashboard() {
 
         <Topbar />
 
-        <div className="dashboard-content">
+        <div className="dashboard-page">
 
-          <DashboardCard
-            title="Total Issues"
-            value={120}
-          />
+          <div className="dashboard-header">
+            <div>
+              <h1>Dashboard</h1>
+              <p>Overview of civic issues and city operations</p>
+            </div>
+          </div>
 
-          <DashboardCard
-            title="Reported"
-            value={50}
-          />
+          <div className="dashboard-content">
 
-          <DashboardCard
-            title="In Progress"
-            value={40}
-          />
+            <DashboardCard
+              title="Total Issues"
+              value={120}
+              icon="📋"
+              accent="total"
+            />
 
-          <DashboardCard
-            title="Resolved"
-            value={30}
-          />
+            <DashboardCard
+              title="Reported"
+              value={50}
+              icon="🆕"
+              accent="reported"
+            />
 
-          <DashboardCard
-            title="Workers"
-            value={12}
-          />
+            <DashboardCard
+              title="In Progress"
+              value={40}
+              icon="⚙️"
+              accent="progress"
+            />
+
+            <DashboardCard
+              title="Resolved"
+              value={30}
+              icon="✅"
+              accent="resolved"
+            />
+
+            <DashboardCard
+              title="Workers"
+              value={12}
+              icon="👷"
+              accent="workers"
+            />
+
+          </div>
 
         </div>
 

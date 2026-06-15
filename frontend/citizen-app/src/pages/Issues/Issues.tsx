@@ -11,11 +11,13 @@ interface Issue {
   category: string;
   location: string;
   status: string;
+  assignedWorker?: string;
+  resolutionNote?: string;
+  proofImage?: string;
   imageUrl?: string;
   latitude?: number;
   longitude?: number;
 }
-
 const categoryIcon: Record<string, string> = {
   "Potholes":        "🕳️",
   "Garbage":         "🗑️",
@@ -73,7 +75,7 @@ function Issues() {
       window.open(`https://www.google.com/maps?q=${encodeURIComponent(issue.location)}`, "_blank");
     }
   };
-
+  
   return (
     <div className="issues-page">
 
@@ -268,6 +270,34 @@ function Issues() {
 	                <h4>Description</h4>
 	                <p>{selectedIssue.description}</p>
 	              </div>
+				  {selectedIssue.assignedWorker && (
+				    <div className="modal-section">
+				      <h4>Assigned Worker</h4>
+				      <p>{selectedIssue.assignedWorker}</p>
+				    </div>
+				  )}
+
+				  {selectedIssue.resolutionNote && (
+				    <div className="modal-section">
+				      <h4>Resolution Note</h4>
+				      <p>{selectedIssue.resolutionNote}</p>
+				    </div>
+				  )}
+				  {selectedIssue.proofImage && (
+				    <div className="modal-section">
+
+				      <h4>Completed Work Proof</h4>
+
+				      <img
+				        src={`http://localhost:8080/uploads/${selectedIssue.proofImage}`}
+				        alt="Completed Work"
+				        className="completed-proof-image"
+				      />
+
+				    </div>
+				  )}
+
+				  
 
 	              <button
 	                className="modal-map-btn"

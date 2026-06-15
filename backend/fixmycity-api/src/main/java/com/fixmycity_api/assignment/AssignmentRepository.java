@@ -1,5 +1,7 @@
 package com.fixmycity_api.assignment;
 
-public class AssignmentRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
 
+public interface AssignmentRepository
+        extends JpaRepository<Assignment, Long> {
 }

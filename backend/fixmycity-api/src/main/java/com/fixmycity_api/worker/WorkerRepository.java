@@ -1,5 +1,7 @@
 package com.fixmycity_api.worker;
 
-public class WorkerRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
 
+public interface WorkerRepository
+        extends JpaRepository<Worker, Long> {
 }

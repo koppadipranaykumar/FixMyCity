@@ -6,12 +6,37 @@
   flex: 1;
   background: #f8fafc;
   min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
 }
 
-.dashboard-content {
-  padding: 25px;
+.dashboard-page {
+  padding: 32px;
+}
 
-  display: flex;
-  flex-wrap: wrap;
+/* ── HEADER ──────────────────────────────────────────────── */
+
+.dashboard-header {
+  margin-bottom: 28px;
+}
+
+.dashboard-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -1px;
+  margin-bottom: 6px;
+}
+
+.dashboard-header p {
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* ── CARDS GRID ──────────────────────────────────────────── */
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
 }
