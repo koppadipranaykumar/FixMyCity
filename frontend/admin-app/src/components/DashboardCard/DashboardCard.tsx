@@ -6,7 +6,7 @@ interface Props {
   title: string;
   value: number;
   icon?: string;
-  accent?: "total" | "reported" | "progress" | "resolved" | "workers";
+  accent?: "total" | "" | "progress" | "resolved" | "workers";
 }
 
 function DashboardCard({

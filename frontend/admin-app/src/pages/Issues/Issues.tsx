@@ -16,6 +16,14 @@ interface Issue {
   resolutionNote?: string;
   proofImage?: string;
 }
+interface Worker {
+  id: number;
+  name: string;
+  phone: string;
+  department: string;
+  area: string;
+  active: boolean;
+}
 
 const categoryIcon: Record<string, string> = {
   "Potholes": "🕳️",
@@ -44,12 +52,7 @@ function Issues() {
   const [worker, setWorker] = useState("");
   const [resolutionNote, setResolutionNote] = useState("");
   const [proofImage, setProofImage] = useState<File | null>(null);
-
-  const workers = [
-    { id: 1, name: "Ramesh" },
-    { id: 2, name: "Suresh" },
-    { id: 3, name: "Mahesh" },
-  ];
+  const [workers, setWorkers] = useState<Worker[]>([]);
 
   const fetchIssues = () => {
     setLoading(true);
@@ -60,88 +63,79 @@ function Issues() {
 
   useEffect(() => {
     fetchIssues();
+    fetchWorkers();
   }, []);
+
+  const fetchWorkers = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/workers");
+      setWorkers(response.data);
+    } catch (err) {
+      console.error("Failed to fetch workers", err);
+    }
+  };
+
+  const categoryDepartmentMap: Record<string, string> = {
+    Potholes: "Roads",
+    Garbage: "Garbage",
+    "Street Lights": "Street Lights",
+    "Water Leakage": "Water Leakage",
+    "Traffic Signals": "Traffic Signals",
+    "Public Property": "Public Property",
+  };
+
+  const availableWorkers = selectedIssue
+    ? workers.filter(
+        (w) => w.active && w.department === categoryDepartmentMap[selectedIssue.category]
+      )
+    : [];
+
   const assignWorker = async () => {
     if (!selectedIssue || !worker) {
       alert("Please select a worker");
       return;
     }
-
     try {
-		await axios.put(
-		  `http://localhost:8080/api/issues/${selectedIssue.id}/assign`,
-		  {
-		    workerName: worker,
-		  }
-		);
-
-		fetchIssues();
-
-		setSelectedIssue((prev) =>
-		  prev
-		    ? {
-		        ...prev,
-		        assignedWorker: worker,
-		        status: "In Progress",
-		      }
-		    : null
-		);
-
+      await axios.put(`http://localhost:8080/api/issues/${selectedIssue.id}/assign`, {
+        workerName: worker,
+      });
+      fetchIssues();
+      setSelectedIssue((prev) =>
+        prev ? { ...prev, assignedWorker: worker, status: "In Progress" } : null
+      );
       alert("Worker assigned successfully");
     } catch (err) {
       console.error(err);
       alert("Failed to assign worker");
     }
   };
+
   const resolveIssue = async () => {
-
     if (!selectedIssue) return;
-
     try {
-
       const formData = new FormData();
-
-      formData.append(
-        "resolutionNote",
-        resolutionNote
-      );
-
-      if (proofImage) {
-        formData.append(
-          "proofImage",
-          proofImage
-        );
-      }
-
+      formData.append("resolutionNote", resolutionNote);
+      if (proofImage) formData.append("proofImage", proofImage);
       await axios.put(
         `http://localhost:8080/api/issues/${selectedIssue.id}/resolve-with-proof`,
         formData,
-        {
-          headers: {
-            "Content-Type":
-              "multipart/form-data"
-          }
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
-
       fetchIssues();
-
       alert("Issue resolved successfully");
-
     } catch (err) {
-
       console.error(err);
-
       alert("Failed to resolve issue");
     }
   };
+
   const categories = [ALL, ...Array.from(new Set(issues.map((i) => i.category)))];
   const statuses = [ALL, "Reported", "In Progress", "Resolved"];
 
   const filtered = issues.filter((issue) => {
     const matchSearch =
-      issue.title.toLowerCase().includes(search.toLowerCase()) ||
-      issue.location.toLowerCase().includes(search.toLowerCase());
+      (issue.title ?? "").toLowerCase().includes(search.toLowerCase()) ||
+      (issue.location ?? "").toLowerCase().includes(search.toLowerCase());
     const matchStatus = filterStatus === ALL || issue.status === filterStatus;
     const matchCategory = filterCategory === ALL || issue.category === filterCategory;
     return matchSearch && matchStatus && matchCategory;
@@ -153,8 +147,6 @@ function Issues() {
     inProgress: issues.filter((i) => i.status === "In Progress").length,
     resolved: issues.filter((i) => i.status === "Resolved").length,
   };
-
- 
 
   const deleteIssue = async (id: number) => {
     if (!window.confirm("Delete this issue permanently?")) return;
@@ -175,12 +167,16 @@ function Issues() {
     }
   };
 
+  const sc_selected = selectedIssue
+    ? (statusConfig[selectedIssue.status] ?? { label: selectedIssue.status, cls: "reported" })
+    : null;
+
   return (
     <div className="admin-issues-page">
 
       {/* Header */}
       <div className="issues-header">
-        <div>
+        <div className="issues-header-text">
           <h1>Issues Management</h1>
           <p>View, manage and resolve all citizen-reported issues</p>
         </div>
@@ -209,10 +205,10 @@ function Issues() {
       {/* Filters */}
       <div className="issues-filters">
         <div className="search-box">
-          <span className="search-icon">🔍</span>
+          <span className="search-icon">⌕</span>
           <input
             type="text"
-            placeholder="Search by title or location…"
+            placeholder="Search by title or location"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -258,7 +254,7 @@ function Issues() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="issues-empty">
-          <span>🔎</span>
+          <span>No results</span>
           <p>No issues match your filters.</p>
           <button onClick={() => { setSearch(""); setFilterStatus(ALL); setFilterCategory(ALL); }}>
             Clear filters
@@ -270,7 +266,7 @@ function Issues() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Image</th>
+                <th></th>
                 <th>Title</th>
                 <th>Category</th>
                 <th>Location</th>
@@ -286,11 +282,7 @@ function Issues() {
                     <td className="cell-id">#{issue.id}</td>
                     <td>
                       <img
-                        src={
-                          issue.imageUrl
-                            ? `http://localhost:8080/uploads/${issue.imageUrl}`
-                            : "/placeholder.jpg"
-                        }
+                        src={issue.imageUrl ? `http://localhost:8080/uploads/${issue.imageUrl}` : "/placeholder.jpg"}
                         alt={issue.title}
                         className="table-thumb"
                       />
@@ -301,28 +293,25 @@ function Issues() {
                     </td>
                     <td>
                       <div className="issue-cat-badge">
-                        <span>{categoryIcon[issue.category] ?? "📌"}</span>
+                        <span>{categoryIcon[issue.category] ?? "•"}</span>
                         <span>{issue.category}</span>
                       </div>
                     </td>
-                    <td className="cell-location">📍 {issue.location}</td>
+                    <td className="cell-location">{issue.location}</td>
                     <td>
                       <span className={`issue-status ${sc.cls}`}>{sc.label}</span>
                     </td>
                     <td>
                       <div className="table-actions">
-                        <button className="action-btn view-btn"					  onClick={() => {
-					    setSelectedIssue(issue);
-
-					    setWorker(issue.assignedWorker || "");
-
-					    setResolutionNote(
-					      issue.resolutionNote || ""
-					    );
-
-					    setProofImage(null); // ONLY clear upload preview
-					  }}
-					  >
+                        <button
+                          className="action-btn view-btn"
+                          onClick={() => {
+                            setSelectedIssue(issue);
+                            setWorker(issue.assignedWorker || "");
+                            setResolutionNote(issue.resolutionNote || "");
+                            setProofImage(null);
+                          }}
+                        >
                           View
                         </button>
                         <button className="action-btn delete-btn" onClick={() => deleteIssue(issue.id)}>
@@ -338,163 +327,145 @@ function Issues() {
         </div>
       )}
 
-      {/* Details Modal */}
+      {/* ── Modal: light, single-column, professional ── */}
       {selectedIssue && (
-        <div className="issue-modal-overlay" onClick={() => setSelectedIssue(null)}>
-          <div className="issue-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-overlay" onClick={() => setSelectedIssue(null)}>
+          <div className="modal-shell" onClick={(e) => e.stopPropagation()}>
+
+            {/* Header */}
             <div className="modal-header">
-              <h2 className="modal-title">{selectedIssue.title}</h2>
-              <button className="modal-close" onClick={() => setSelectedIssue(null)}>✕</button>
-            </div>
-
-            <img
-              src={
-                selectedIssue.imageUrl
-                  ? `http://localhost:8080/uploads/${selectedIssue.imageUrl}`
-                  : "/placeholder.jpg"
-              }
-              alt={selectedIssue.title}
-              className="modal-image"
-            />
-
-            <div className="modal-info">
-              <div><span>Category</span>{selectedIssue.category}</div>
-              <div><span>Status</span>{selectedIssue.status}</div>
-              <div><span>Location</span>{selectedIssue.location}</div>
-            </div>
-
-            <div className="modal-section">
-              <h4>Description</h4>
-              <p>{selectedIssue.description}</p>
-            </div>
-
-            {selectedIssue.assignedWorker && (
-              <div className="modal-section">
-                <h4>Assigned Worker</h4>
-                <p>{selectedIssue.assignedWorker}</p>
+              <div className="modal-header-left">
+                <span className="modal-id-tag">#{selectedIssue.id}</span>
+                <span className={`issue-status ${sc_selected?.cls}`}>{sc_selected?.label}</span>
               </div>
-            )}
+              <button className="modal-close-btn" onClick={() => setSelectedIssue(null)}>✕</button>
+            </div>
 
-            {selectedIssue.resolutionNote && (
-              <div className="modal-section">
-                <h4>Resolution Notes</h4>
-                <p>{selectedIssue.resolutionNote}</p>
+            <div className="modal-body">
+
+              {/* Top: image + summary side by side */}
+              <div className="modal-summary-row">
+                <img
+                  src={selectedIssue.imageUrl ? `http://localhost:8080/uploads/${selectedIssue.imageUrl}` : "/placeholder.jpg"}
+                  alt={selectedIssue.title}
+                  className="modal-thumb"
+                />
+                <div className="modal-summary-text">
+                  <div className="modal-cat-row">
+                    <span>{categoryIcon[selectedIssue.category] ?? "•"}</span>
+                    <span>{selectedIssue.category}</span>
+                  </div>
+                  <h2 className="modal-issue-title">{selectedIssue.title}</h2>
+                  <p className="modal-issue-desc">{selectedIssue.description}</p>
+                </div>
               </div>
-            )}
 
-			<div className="modal-section">
-			  <h4>Assign Worker</h4>
+              {/* Meta row */}
+              <div className="modal-meta-row">
+                <div className="meta-item">
+                  <span className="meta-key">Location</span>
+                  <span className="meta-val">{selectedIssue.location}</span>
+                </div>
+                {selectedIssue.assignedWorker && (
+                  <div className="meta-item">
+                    <span className="meta-key">Worker</span>
+                    <span className="meta-val">{selectedIssue.assignedWorker}</span>
+                  </div>
+                )}
+                <button className="btn-map" onClick={() => openMap(selectedIssue)}>
+                  Open on Map
+                </button>
+              </div>
 
-			  <select
-			    className="worker-select"
-			    value={worker}
-			    onChange={(e) => setWorker(e.target.value)}
-			    disabled={selectedIssue.status !== "Reported"}
-			  >
-			    <option value="">
-			      Select Worker
-			    </option>
+              {selectedIssue.resolutionNote && (
+                <div className="modal-resolution-box">
+                  <span className="resolution-label">Resolution Notes</span>
+                  <p>{selectedIssue.resolutionNote}</p>
+                </div>
+              )}
 
-			    {workers.map((w) => (
-			      <option
-			        key={w.id}
-			        value={w.name}
-			      >
-			        {w.name}
-			      </option>
-			    ))}
-			  </select>
+              <hr className="modal-divider" />
 
-			  <button
-			    className="modal-action-btn progress-btn"
-			    disabled={
-			      selectedIssue.status !== "Reported"
-			    }
-			    onClick={assignWorker}
-			  >
-			    Assign Worker
-			  </button>
-			</div>
+              {/* Proof images */}
+              {(proofImage || selectedIssue.proofImage) && (
+                <div className="action-block">
+                  <p className="action-label">Proof Image</p>
+                  {proofImage && (
+                    <img src={URL.createObjectURL(proofImage)} alt="Proof Preview" className="proof-preview" />
+                  )}
+                  {selectedIssue.proofImage && !proofImage && (
+                    <img src={`http://localhost:8080/uploads/${selectedIssue.proofImage}`} alt="Saved Proof" className="proof-preview" />
+                  )}
+                </div>
+              )}
 
-			<div className="modal-section">
-			  <h4>Resolution Note</h4>
+              {/* Assign Worker */}
+              <div className="action-block">
+                <p className="action-label">Assign Worker</p>
+                <div className="action-row">
+                  <select
+                    className="modal-select"
+                    value={worker}
+                    onChange={(e) => setWorker(e.target.value)}
+                    disabled={selectedIssue.status !== "Reported"}
+                  >
+                    <option value="">Select a worker…</option>
+                    {availableWorkers.map((w) => (
+                      <option key={w.id} value={w.name}>{w.name} — {w.area}</option>
+                    ))}
+                  </select>
+                  <button
+                    className="action-primary-btn"
+                    disabled={selectedIssue.status !== "Reported"}
+                    onClick={assignWorker}
+                  >
+                    Assign
+                  </button>
+                </div>
+              </div>
 
-			  <textarea
-			    className="resolution-textarea"
-			    placeholder="Enter resolution details..."
-			    value={resolutionNote}
-			    onChange={(e) =>
-			      setResolutionNote(
-			        e.target.value
-			      )
-			    }
-			    disabled={
-			      selectedIssue.status !== "In Progress"
-			    }
-			  />
-			  <h4>Completion Proof Image</h4>
+              {/* Resolution */}
+              <div className="action-block">
+                <p className="action-label">Resolution Note</p>
+                <textarea
+                  className="modal-textarea"
+                  placeholder="Describe what was done to fix the issue…"
+                  value={resolutionNote}
+                  onChange={(e) => setResolutionNote(e.target.value)}
+                  disabled={selectedIssue.status !== "In Progress"}
+                />
+              </div>
 
-			  <input
-			    type="file"
-			    accept="image/*"
-			    onChange={(e) => {
-			      if (e.target.files?.length) {
-			        setProofImage(e.target.files[0]);
-			      }
-			    }}
-			  />
-			</div>
-			
-			{proofImage && (
-			  <img
-			    src={URL.createObjectURL(proofImage)}
-			    alt="Proof Preview"
-			    style={{
-			      width: "100%",
-			      marginTop: "10px",
-			      borderRadius: "10px"
-			    }}
-			  />
-			)}
-			{selectedIssue?.proofImage && (
-			  <>
-			    <h4>Saved Proof Image</h4>
+              {/* Proof upload */}
+              <div className="action-block">
+                <p className="action-label">Upload Proof Image</p>
+                <label className="file-upload-label">
+                  <span>Choose image</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => { if (e.target.files?.length) setProofImage(e.target.files[0]); }}
+                  />
+                </label>
+                {proofImage && <span className="file-name-hint">{proofImage.name}</span>}
+              </div>
 
-			    <img
-			      src={`http://localhost:8080/uploads/${selectedIssue.proofImage}`}
-			      alt="Saved Proof"
-			      style={{
-			        width: "100%",
-			        marginTop: "10px",
-			        borderRadius: "10px"
-			      }}
-			    />
-			  </>
-			)}
-			<div className="modal-status-actions">
-			  <button
-			    className="modal-action-btn resolve-btn"
-			    disabled={
-			      selectedIssue.status !== "In Progress"
-			    }
-			    onClick={resolveIssue}
-			  >
-			    Mark Resolved
-			  </button>
+            </div>
 
-			  <button
-			    className="modal-action-btn delete-modal-btn"
-			    onClick={() =>
-			      deleteIssue(selectedIssue.id)
-			    }
-			  >
-			    Delete Issue
-			  </button>
-			</div>
+            {/* Bottom actions */}
+            <div className="modal-bottom-actions">
+              <button
+                className="btn-resolve"
+                disabled={selectedIssue.status !== "In Progress"}
+                onClick={resolveIssue}
+              >
+                Mark Resolved
+              </button>
+              <button className="btn-danger" onClick={() => deleteIssue(selectedIssue.id)}>
+                Delete Issue
+              </button>
+            </div>
 
-            <button className="modal-map-btn" onClick={() => openMap(selectedIssue)}>
-              Open Location
-            </button>
           </div>
         </div>
       )}

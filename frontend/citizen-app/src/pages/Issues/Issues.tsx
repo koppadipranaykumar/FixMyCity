@@ -79,16 +79,7 @@ function Issues() {
   return (
     <div className="issues-page">
 
-      {/* Navbar */}
-      <nav className="issues-nav">
-        <button className="issues-nav-logo" onClick={() => navigate("/")}>
-          <img src={logo} alt="FixMyCity" className="nav-logo-img" />
-        </button>
-        <button className="issues-report-btn" onClick={() => navigate("/report")}>
-          + Report Issue
-        </button>
-      </nav>
-
+      
       {/* Header */}
       <div className="issues-header">
         <div>

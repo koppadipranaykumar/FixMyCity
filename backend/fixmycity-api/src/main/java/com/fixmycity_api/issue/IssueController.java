@@ -31,7 +31,7 @@ public class IssueController {
             @RequestParam String description,
             @RequestParam String category,
             @RequestParam String location,
-
+            @RequestParam String userEmail,
             @RequestParam(required = false)
             Double latitude,
 
@@ -39,7 +39,8 @@ public class IssueController {
             Double longitude,
 
             @RequestParam(required = false)
-            MultipartFile image
+            MultipartFile image,
+            @RequestParam String reportedBy
 
     ) throws Exception {
 
@@ -48,9 +49,11 @@ public class IssueController {
                 description,
                 category,
                 location,
+                userEmail,
                 latitude,
                 longitude,
-                image
+                image,
+                reportedBy
         );
     }
     @PutMapping(
@@ -85,7 +88,16 @@ public class IssueController {
     public List<Issue> getAllIssues() {
         return issueService.getAllIssues();
     }
+    @GetMapping("/my-reports/{email}")
+    public List<Issue> getMyReports(
 
+            @PathVariable String email
+
+    ) {
+
+        return issueService
+                .getIssuesByUser(email);
+    }
     // ASSIGN WORKER
 
     @PutMapping("/{id}/assign")

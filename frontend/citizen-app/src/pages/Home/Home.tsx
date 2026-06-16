@@ -1,6 +1,8 @@
 import "./Home.css";
 import logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const categories = [
   {
@@ -54,66 +56,36 @@ const stats = [
   },
 ];
 
-const issues = [
-  {
-    title: "Pothole at Kukatpally Main Road",
-    location: "Kukatpally, Hyderabad",
-    status: "progress",
-    label: "In Progress",
-  },
-  {
-    title: "Garbage Dumping Near Bus Stop",
-    location: "Ameerpet, Hyderabad",
-    status: "reported",
-    label: "Reported",
-  },
-  {
-    title: "Streetlight Out on NH-65",
-    location: "Miyapur, Hyderabad",
-    status: "resolved",
-    label: "Resolved",
-  },
-];
+// Map API status values to dot class and badge label
+const statusConfig = {
+  "Reported":    { cls: "reported", label: "Reported" },
+  "In Progress": { cls: "progress", label: "In Progress" },
+  "Resolved":    { cls: "resolved", label: "Resolved" },
+};
 
 function Home() {
   const navigate = useNavigate();
+  const [recentIssues, setRecentIssues] = useState([]);
+  const [loadingIssues, setLoadingIssues] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/issues")
+      .then((r) => {
+        // Take the last 3 issues as "recent" (or slice however many you want)
+        const all = r.data;
+        const recent = all.slice(-3).reverse(); // newest first
+        setRecentIssues(recent);
+        setLoadingIssues(false);
+      })
+      .catch(() => {
+        setLoadingIssues(false);
+      });
+  }, []);
 
   return (
     <div className="home">
-      {/* Navbar */}
-      <nav className="navbar">
-        <div className="logo-container">
-          <img
-            src={logo}
-            alt="FixMyCity"
-            className="logo-img"
-          />
-        </div>
-
-        <div className="nav-links">
-          <a href="/">Home</a>
-          <a href="/issues">Issues</a>
-          <a href="/about">About</a>
-          <a href="/contact">Contact</a>
-        </div>
-
-        <div className="auth-buttons">
-          <button
-            className="login-btn"
-            onClick={() => navigate("/login")}
-          >
-            Login
-          </button>
-
-          <button
-            className="register-btn"
-            onClick={() => navigate("/register")}
-          >
-            Register
-          </button>
-        </div>
-      </nav>
-
+      
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-badge">
@@ -216,34 +188,49 @@ function Home() {
         </div>
 
         <div className="issues-list">
-          {issues.map((issue) => (
-            <div
-              className="issue-card"
-              key={issue.title}
-            >
-              <div className="issue-info">
-                <span
-                  className={`issue-dot ${issue.status}`}
-                />
+          {loadingIssues ? (
+            <p style={{ color: "var(--slate-400)", fontSize: 14 }}>
+              Loading recent issues…
+            </p>
+          ) : recentIssues.length === 0 ? (
+            <p style={{ color: "var(--slate-400)", fontSize: 14 }}>
+              No issues reported yet.
+            </p>
+          ) : (
+            recentIssues.map((issue) => {
+              const sc =
+                statusConfig[issue.status] ?? {
+                  cls: "reported",
+                  label: issue.status,
+                };
+              return (
+                <div
+                  className="issue-card"
+                  key={issue.id}
+                >
+                  <div className="issue-info">
+                    <span className={`issue-dot ${sc.cls}`} />
 
-                <div>
-                  <div className="issue-title">
-                    {issue.title}
+                    <div>
+                      <div className="issue-title">
+                        {issue.title}
+                      </div>
+
+                      <div className="issue-meta">
+                        {issue.location}
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="issue-meta">
-                    {issue.location}
-                  </div>
+                  <span
+                    className={`status-badge status-${sc.cls}`}
+                  >
+                    {sc.label}
+                  </span>
                 </div>
-              </div>
-
-              <span
-                className={`status-badge status-${issue.status}`}
-              >
-                {issue.label}
-              </span>
-            </div>
-          ))}
+              );
+            })
+          )}
         </div>
       </section>
 

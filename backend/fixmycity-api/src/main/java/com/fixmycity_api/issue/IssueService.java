@@ -1,5 +1,6 @@
 package com.fixmycity_api.issue;
-
+import com.fixmycity_api.user.User;
+import com.fixmycity_api.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,9 +15,11 @@ import java.util.List;
 public class IssueService {
 
     private final IssueRepository issueRepository;
+    private final UserRepository userRepository;
 
-    public IssueService(IssueRepository issueRepository) {
+    public IssueService(IssueRepository issueRepository,UserRepository userRepository) {
         this.issueRepository = issueRepository;
+        this.userRepository = userRepository;
     }
 
     // GET ALL ISSUES
@@ -28,14 +31,16 @@ public class IssueService {
     // CREATE ISSUE
 
     public String createIssue(
-            String title,
-            String description,
-            String category,
-            String location,
-            Double latitude,
-            Double longitude,
-            MultipartFile image
-    ) throws Exception {
+    	    String title,
+    	    String description,
+    	    String category,
+    	    String location,
+    	    String userEmail,
+    	    Double latitude,
+    	    Double longitude,
+    	    MultipartFile image,
+    	    String reportedBy
+    	)throws Exception {
 
         String imageUrl = null;
 
@@ -60,19 +65,22 @@ public class IssueService {
 
             imageUrl = fileName;
         }
-
+        User user = userRepository
+                .findByEmail(userEmail)
+                .orElseThrow(() ->
+                        new RuntimeException("User not found"));
         Issue issue = new Issue();
 
         issue.setTitle(title);
         issue.setDescription(description);
         issue.setCategory(category);
         issue.setLocation(location);
-
+        issue.setUser(user);
         issue.setLatitude(latitude);
         issue.setLongitude(longitude);
 
         issue.setImageUrl(imageUrl);
-
+        issue.setReportedBy(reportedBy);
         issue.setStatus("Reported");
 
         issue.setReportedAt(
@@ -183,5 +191,12 @@ public class IssueService {
     ) {
 
         issueRepository.deleteById(issueId);
+    }
+    public List<Issue> getIssuesByUser(
+            String email
+    ) {
+
+        return issueRepository
+                .findByReportedBy(email);
     }
 }

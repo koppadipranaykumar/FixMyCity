@@ -1,10 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
 import "./ReportIssue.css";
-
-import logo from "../../assets/logo.png";
 import MapPicker from "../../components/MapPicker";
 
 const categories = [
@@ -17,7 +14,6 @@ const categories = [
 ];
 
 function ReportIssue() {
-  const navigate = useNavigate();
 
   const [step, setStep]               = useState(1);
   const [category, setCategory]       = useState("");
@@ -30,6 +26,14 @@ function ReportIssue() {
   const [submitted, setSubmitted]     = useState(false);
   const [loading, setLoading]         = useState(false);
   const [error, setError]             = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userEmail = localStorage.getItem("userEmail");
+    if (!userEmail) {
+      navigate("/login");
+    }
+  }, []);
 
   // ── Geocode via Spring Boot proxy (avoids CORS + Nominatim rate limits) ──
   const searchLocation = async (locationName: string): Promise<boolean> => {
@@ -96,12 +100,16 @@ function ReportIssue() {
     setError("");
 
     try {
+      // ✅ Safely retrieve userEmail — never null
+      const userEmail = localStorage.getItem("userEmail") ?? "";
+
       const formData = new FormData();
       formData.append("title",       title);
       formData.append("description", description);
       formData.append("category",    category);
       formData.append("location",    location);
-
+      formData.append("userEmail",   userEmail);
+      formData.append("reportedBy",  userEmail); // ✅ always a string, no null risk
       if (latitude  !== null) formData.append("latitude",  latitude.toString());
       if (longitude !== null) formData.append("longitude", longitude.toString());
       if (image)              formData.append("image",     image);
@@ -176,14 +184,6 @@ function ReportIssue() {
   // ── Main form ─────────────────────────────────────────────────────────────
   return (
     <div className="ri-page">
-
-      {/* Top bar */}
-      <header className="ri-topbar">
-        <button className="ri-logo-btn" onClick={() => navigate("/")}>
-          <img src={logo} alt="FixMyCity" className="ri-logo" />
-        </button>
-        <button className="ri-close-btn" onClick={() => navigate("/")}>✕</button>
-      </header>
 
       {/* Stepper */}
       <div className="ri-stepper">
@@ -299,7 +299,6 @@ function ReportIssue() {
               </div>
             </div>
 
-            {/* Show geocode error on step 2 as well */}
             {error && <div className="ri-error">{error}</div>}
           </div>
         )}

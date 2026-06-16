@@ -15,13 +15,42 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/login", { email, password });
-      setMessage(response.data);
-      setIsError(false);
-      if (response.data === "Login Successful") {
-        localStorage.setItem("userEmail", email);
-        setTimeout(() => navigate("/"), 1000);
-      }
+		const response = await axios.post(
+		  "http://localhost:8080/api/auth/login",
+		  {
+		    email,
+		    password
+		  }
+		);
+
+		const result = response.data;
+
+		if (result === "Login Successful") {
+
+		  localStorage.setItem(
+		    "userEmail",
+		    email
+		  );
+
+		  window.location.href = "/";
+		}
+		else if (result === "User not found") {
+
+		  setMessage(
+		    "Account not found. Please register first."
+		  );
+
+		  setIsError(true);
+
+		  setTimeout(() => {
+		    navigate("/register");
+		  }, 2000);
+		}
+		else {
+
+		  setMessage(result);
+		  setIsError(true);
+		}
     } catch {
       setMessage("Invalid email or password. Please try again.");
       setIsError(true);

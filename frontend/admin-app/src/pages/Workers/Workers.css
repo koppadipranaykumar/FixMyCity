@@ -1,0 +1,473 @@
+/* ============================================================
+   FixMyCity — Worker Management
+   Ops-dashboard styling: utilitarian, dispatch-board feel
+   ============================================================ */
+
+:root {
+  --wk-ink:        #14181f;
+  --wk-ink-soft:   #4a5161;
+  --wk-line:       #e4e7ec;
+  --wk-surface:    #ffffff;
+  --wk-bg:         #f6f7f9;
+  --wk-accent:     #2563eb;
+  --wk-accent-ink: #ffffff;
+  --wk-good:       #15803d;
+  --wk-good-bg:    #ecfdf3;
+  --wk-bad:        #b42318;
+  --wk-bad-bg:     #fef3f2;
+  --wk-radius:     10px;
+  --wk-mono:       "SF Mono", "JetBrains Mono", Consolas, monospace;
+}
+
+.workers-page {
+  padding: 32px 36px 56px;
+  background: var(--wk-bg);
+  min-height: 100vh;
+  color: var(--wk-ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ---------- Header ---------- */
+
+.wk-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.wk-header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px;
+}
+
+.wk-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: var(--wk-ink-soft);
+}
+
+.wk-stats {
+  display: flex;
+  gap: 12px;
+}
+
+.wk-stat {
+  background: var(--wk-surface);
+  border: 1px solid var(--wk-line);
+  border-radius: var(--wk-radius);
+  padding: 10px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 76px;
+}
+
+.wk-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--wk-mono);
+}
+
+.wk-stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--wk-ink-soft);
+  margin-top: 2px;
+}
+
+.wk-stat--active .wk-stat-value {
+  color: var(--wk-good);
+}
+
+/* ---------- Add worker form ---------- */
+
+.wk-form-card {
+  background: var(--wk-surface);
+  border: 1px solid var(--wk-line);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.wk-form-title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--wk-ink-soft);
+  margin: 0 0 16px;
+}
+
+.wk-form-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1.2fr 1.2fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.wk-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wk-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wk-ink-soft);
+}
+
+.wk-field input,
+.wk-field select {
+  padding: 10px 12px;
+  border: 1px solid var(--wk-line);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--wk-surface);
+  color: var(--wk-ink);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.wk-field input:focus,
+.wk-field select:focus {
+  outline: none;
+  border-color: var(--wk-accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.wk-add-btn {
+  padding: 11px 20px;
+  border: none;
+  background: var(--wk-accent);
+  color: var(--wk-accent-ink);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, transform 0.05s;
+}
+
+.wk-add-btn:hover:not(:disabled) {
+  background: #1d4fd1;
+}
+
+.wk-add-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.wk-add-btn:disabled {
+  background: #93b4f5;
+  cursor: not-allowed;
+}
+
+.wk-form-error {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--wk-bad-bg);
+  color: var(--wk-bad);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ---------- Toolbar: search + filters ---------- */
+
+.wk-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.wk-search {
+  flex: 1;
+  min-width: 220px;
+  max-width: 320px;
+  padding: 10px 14px;
+  border: 1px solid var(--wk-line);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--wk-surface);
+}
+
+.wk-search:focus {
+  outline: none;
+  border-color: var(--wk-accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.wk-filter-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.wk-chip {
+  padding: 7px 14px;
+  border: 1px solid var(--wk-line);
+  background: var(--wk-surface);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--wk-ink-soft);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.wk-chip:hover {
+  border-color: var(--wk-accent);
+  color: var(--wk-accent);
+}
+
+.wk-chip--active {
+  background: var(--wk-ink);
+  border-color: var(--wk-ink);
+  color: #fff;
+}
+
+.wk-chip--active:hover {
+  color: #fff;
+}
+
+/* ---------- Table card ---------- */
+
+.wk-table-card {
+  background: var(--wk-surface);
+  border: 1px solid var(--wk-line);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.worker-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.worker-table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--wk-ink-soft);
+  background: #fafbfc;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--wk-line);
+}
+
+.worker-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--wk-line);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.worker-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.worker-table tbody tr:hover {
+  background: #fafbfc;
+}
+
+/* Name cell with avatar */
+
+.wk-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wk-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.wk-name-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.wk-name {
+  font-weight: 600;
+  color: var(--wk-ink);
+}
+
+.wk-id {
+  font-size: 11px;
+  font-family: var(--wk-mono);
+  color: var(--wk-ink-soft);
+}
+
+.wk-phone {
+  font-family: var(--wk-mono);
+  font-size: 13px;
+  color: var(--wk-ink-soft);
+}
+
+/* Department badges + avatar colors share the same palette */
+
+.wk-dept-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dept-roads      { background: #fef3e2; color: #b54708; }
+.dept-garbage    { background: #eef0f4; color: #475467; }
+.dept-lights     { background: #fef9e7; color: #a35a00; }
+.dept-water      { background: #e6f4fd; color: #0b6bb3; }
+.dept-traffic    { background: #fdeaea; color: #c0292c; }
+.dept-property   { background: #e9f6ec; color: #1d7a37; }
+.dept-default    { background: #f1f1f1; color: #555; }
+
+.wk-avatar.dept-roads      { background: #b54708; }
+.wk-avatar.dept-garbage    { background: #475467; }
+.wk-avatar.dept-lights     { background: #a35a00; }
+.wk-avatar.dept-water      { background: #0b6bb3; }
+.wk-avatar.dept-traffic    { background: #c0292c; }
+.wk-avatar.dept-property   { background: #1d7a37; }
+.wk-avatar.dept-default    { background: #6b7280; }
+
+/* Status pill */
+
+.wk-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.wk-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.wk-status--active {
+  background: var(--wk-good-bg);
+  color: var(--wk-good);
+}
+
+.wk-status--active .wk-status-dot {
+  background: var(--wk-good);
+}
+
+.wk-status--inactive {
+  background: #f2f4f7;
+  color: #667085;
+}
+
+.wk-status--inactive .wk-status-dot {
+  background: #98a2b3;
+}
+
+/* Delete button */
+
+.wk-delete-btn {
+  padding: 7px 14px;
+  border: 1px solid var(--wk-line);
+  background: var(--wk-surface);
+  color: var(--wk-bad);
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.wk-delete-btn:hover:not(:disabled) {
+  background: var(--wk-bad-bg);
+  border-color: #f3a39a;
+}
+
+.wk-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Empty / loading state */
+
+.wk-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 56px 24px;
+  color: var(--wk-ink-soft);
+  font-size: 14px;
+  text-align: center;
+}
+
+.wk-empty-icon {
+  font-size: 32px;
+}
+
+.wk-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--wk-line);
+  border-top-color: var(--wk-accent);
+  border-radius: 50%;
+  animation: wk-spin 0.7s linear infinite;
+}
+
+@keyframes wk-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 980px) {
+  .wk-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .wk-add-btn {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .workers-page {
+    padding: 20px 16px 40px;
+  }
+  .wk-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .wk-add-btn {
+    grid-column: span 1;
+  }
+  .worker-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
