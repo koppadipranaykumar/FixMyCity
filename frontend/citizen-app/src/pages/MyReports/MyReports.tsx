@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./MyReports.css";
+import API_BASE_URL from "../../config/api";
 
 interface Issue {
   id: number;
@@ -46,7 +47,7 @@ function MyReports() {
     if (!email) { setLoading(false); return; }
 
     axios
-      .get(`http://localhost:8080/api/issues/my-reports/${email}`)
+      .get(`${API_BASE_URL}/api/issues/my-reports/${email}`)
       .then((res) => setIssues(res.data))
       .catch(console.error)
       .finally(() => setLoading(false));

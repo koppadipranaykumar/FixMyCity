@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Issues.css";
 import logo from "../../assets/logo.png";
+import API_BASE_URL from "../../config/api";
 
 interface Issue {
   id: number;
@@ -45,7 +46,7 @@ function Issues() {
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/issues")
+    axios.get(`${API_BASE_URL}/api/issues`)
       .then((r) => { setIssues(r.data); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
@@ -176,7 +177,7 @@ function Issues() {
                 <img
                   src={
                     issue.imageUrl
-                      ? `http://localhost:8080/uploads/${issue.imageUrl}`
+                      ?  `${API_BASE_URL}:8080/uploads/${issue.imageUrl}`
                       : "/placeholder.jpg"
                   }
                   alt={issue.title}
@@ -244,7 +245,7 @@ function Issues() {
 	              <img
 	                src={
 	                  selectedIssue.imageUrl
-	                    ? `http://localhost:8080/uploads/${selectedIssue.imageUrl}`
+	                    ?  `${API_BASE_URL}/uploads/${selectedIssue.imageUrl}`
 	                    : "/placeholder.jpg"
 	                }
 	                alt={selectedIssue.title}
@@ -280,7 +281,7 @@ function Issues() {
 				      <h4>Completed Work Proof</h4>
 
 				      <img
-				        src={`http://localhost:8080/uploads/${selectedIssue.proofImage}`}
+				        src={ `${API_BASE_URL}/uploads/${selectedIssue.proofImage}`}
 				        alt="Completed Work"
 				        className="completed-proof-image"
 				      />

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
-
+import API_BASE_URL from "../../config/api";
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -16,7 +16,7 @@ function Login() {
     setLoading(true);
     try {
 		const response = await axios.post(
-		  "http://localhost:8080/api/auth/login",
+		  `${API_BASE_URL}/api/auth/login`,
 		  {
 		    email,
 		    password

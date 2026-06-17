@@ -3,6 +3,7 @@ import logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../../config/api";
 
 const categories = [
   {
@@ -69,8 +70,7 @@ function Home() {
   const [loadingIssues, setLoadingIssues] = useState(true);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/issues")
+    axios.get( `${API_BASE_URL}/api/issues`)
       .then((r) => {
         // Take the last 3 issues as "recent" (or slice however many you want)
         const all = r.data;

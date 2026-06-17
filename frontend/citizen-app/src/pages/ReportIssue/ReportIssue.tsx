@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./ReportIssue.css";
 import MapPicker from "../../components/MapPicker";
-
+import API_BASE_URL from "../../config/api";
 const categories = [
   { value: "Potholes",        icon: "🕳️", desc: "Damaged road surface"  },
   { value: "Garbage",         icon: "🗑️", desc: "Waste & littering"      },
@@ -39,7 +39,7 @@ function ReportIssue() {
   const searchLocation = async (locationName: string): Promise<boolean> => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/geocode",
+         `${API_BASE_URL}/api/geocode`,
         { params: { q: locationName } }
       );
 
@@ -115,7 +115,7 @@ function ReportIssue() {
       if (image)              formData.append("image",     image);
 
       await axios.post(
-        "http://localhost:8080/api/issues",
+        `${API_BASE_URL}/api/issues`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
