@@ -3,6 +3,7 @@ import axios from "axios";
 import DashboardCard from "../../components/DashboardCard/DashboardCard";
 import "./Dashboard.css";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../../config/api";
 
 function Dashboard() {
   const [totalIssues, setTotalIssues] = useState(0);
@@ -16,8 +17,8 @@ function Dashboard() {
   const loadDashboard = async () => {
     try {
       const [issuesResponse, workersResponse] = await Promise.all([
-        axios.get("http://localhost:8080/api/issues"),
-        axios.get("http://localhost:8080/api/workers"),
+        axios.get(`${API_BASE_URL}/api/issues`),
+        axios.get("`${API_BASE_URL}/api/workers`),
       ]);
 
       const issues = issuesResponse.data;

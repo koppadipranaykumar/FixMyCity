@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Workers.css";
+import API_BASE_URL from "../../config/api";
 
 interface Worker {
   id: number;
@@ -60,7 +61,7 @@ function Workers() {
   const fetchWorkers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8080/api/workers");
+      const response = await axios.get(`${API_BASE_URL}/api/workers`);
       setWorkers(response.data);
     } catch (err) {
       console.error("Failed to fetch workers:", err);
@@ -83,7 +84,7 @@ function Workers() {
     setSubmitting(true);
 
     try {
-      await axios.post("http://localhost:8080/api/workers", {
+      await axios.post(`${API_BASE_URL}/api/workers`, {
         name,
         phone,
         department,
@@ -107,7 +108,7 @@ function Workers() {
   const deleteWorker = async (id: number) => {
     setDeletingId(id);
     try {
-      await axios.delete(`http://localhost:8080/api/workers/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/workers/${id}`);
       fetchWorkers();
     } catch (err) {
       console.error("Failed to delete worker:", err);

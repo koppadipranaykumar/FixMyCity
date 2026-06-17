@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Issues.css";
+import API_BASE_URL from "../../config/api";
 
 interface Issue {
   id: number;
@@ -56,7 +57,7 @@ function Issues() {
 
   const fetchIssues = () => {
     setLoading(true);
-    axios.get("http://localhost:8080/api/issues")
+    axios.get(`${API_BASE_URL}/api/issues`)
       .then((r) => { setIssues(r.data); setLoading(false); })
       .catch(() => setLoading(false));
   };
@@ -68,7 +69,7 @@ function Issues() {
 
   const fetchWorkers = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/workers");
+      const response = await axios.get(`${API_BASE_URL}/api/workers`);
       setWorkers(response.data);
     } catch (err) {
       console.error("Failed to fetch workers", err);
@@ -96,7 +97,7 @@ function Issues() {
       return;
     }
     try {
-      await axios.put(`http://localhost:8080/api/issues/${selectedIssue.id}/assign`, {
+      await axios.put(`${API_BASE_URL}/api/issues/${selectedIssue.id}/assign`, {
         workerName: worker,
       });
       fetchIssues();
@@ -117,7 +118,7 @@ function Issues() {
       formData.append("resolutionNote", resolutionNote);
       if (proofImage) formData.append("proofImage", proofImage);
       await axios.put(
-        `http://localhost:8080/api/issues/${selectedIssue.id}/resolve-with-proof`,
+        `${API_BASE_URL}/api/issues/${selectedIssue.id}/resolve-with-proof`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -151,7 +152,7 @@ function Issues() {
   const deleteIssue = async (id: number) => {
     if (!window.confirm("Delete this issue permanently?")) return;
     try {
-      await axios.delete(`http://localhost:8080/api/issues/${id}`);
+      await axios.delete(`${API_BASE_URL}/api/issues/${id}`);
       setIssues((prev) => prev.filter((i) => i.id !== id));
       setSelectedIssue(null);
     } catch (err) {
@@ -282,7 +283,7 @@ function Issues() {
                     <td className="cell-id">#{issue.id}</td>
                     <td>
                       <img
-                        src={issue.imageUrl ? `http://localhost:8080/uploads/${issue.imageUrl}` : "/placeholder.jpg"}
+                        src={issue.imageUrl ? `${API_BASE_URL}/uploads/${issue.imageUrl}` : "/placeholder.jpg"}
                         alt={issue.title}
                         className="table-thumb"
                       />
@@ -346,7 +347,7 @@ function Issues() {
               {/* Top: image + summary side by side */}
               <div className="modal-summary-row">
                 <img
-                  src={selectedIssue.imageUrl ? `http://localhost:8080/uploads/${selectedIssue.imageUrl}` : "/placeholder.jpg"}
+                  src={selectedIssue.imageUrl ? `${API_BASE_URL}/uploads/${selectedIssue.imageUrl}` : "/placeholder.jpg"}
                   alt={selectedIssue.title}
                   className="modal-thumb"
                 />
@@ -394,7 +395,7 @@ function Issues() {
                     <img src={URL.createObjectURL(proofImage)} alt="Proof Preview" className="proof-preview" />
                   )}
                   {selectedIssue.proofImage && !proofImage && (
-                    <img src={`http://localhost:8080/uploads/${selectedIssue.proofImage}`} alt="Saved Proof" className="proof-preview" />
+                    <img src={`${API_BASE_URL}/uploads/${selectedIssue.proofImage}`} alt="Saved Proof" className="proof-preview" />
                   )}
                 </div>
               )}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Assignments.css";
-
+import API_BASE_URL from "../../config/api";
 interface Issue {
   id: number;
   title: string;
@@ -72,7 +72,7 @@ function Assignments() {
   const loadAssignments = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8080/api/issues");
+      const response = await axios.get(`${API_BASE_URL}/api/issues`);
       const assignedIssues = response.data.filter(
         (issue: Issue) => issue.assignedWorker
       );
