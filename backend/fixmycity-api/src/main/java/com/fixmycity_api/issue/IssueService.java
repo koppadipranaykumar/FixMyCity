@@ -51,9 +51,7 @@ public class IssueService {
                             + "_"
                             + image.getOriginalFilename();
 
-            Path uploadPath = Paths.get(
-                    "C:\\Users\\Pranay Kumar\\Desktop\\FixMyCity\\backend\\fixmycity-api\\uploads"
-            );
+            Path uploadPath = Paths.get("uploads");
 
             Files.createDirectories(uploadPath);
 
@@ -156,10 +154,7 @@ public class IssueService {
                     + "_"
                     + proofImage.getOriginalFilename();
 
-            Path uploadPath =
-                    Paths.get(
-                            "C:\\Users\\Pranay Kumar\\Desktop\\FixMyCity\\backend\\fixmycity-api\\uploads"
-                    );
+            Path uploadPath = Paths.get("uploads");
 
             Files.createDirectories(
                     uploadPath
