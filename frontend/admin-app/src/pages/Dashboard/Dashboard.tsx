@@ -18,7 +18,7 @@ function Dashboard() {
     try {
       const [issuesResponse, workersResponse] = await Promise.all([
         axios.get(`${API_BASE_URL}/api/issues`),
-        axios.get("`${API_BASE_URL}/api/workers`),
+        axios.get(`${API_BASE_URL}/api/workers`),
       ]);
 
       const issues = issuesResponse.data;
