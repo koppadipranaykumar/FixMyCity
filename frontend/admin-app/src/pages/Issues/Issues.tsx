@@ -76,16 +76,6 @@ function Issues() {
     }
   };
 
-  // Helper utility function to handle dynamic upload path rendering cleanly
-  const getFullImageUrl = (pathString: string | undefined) => {
-    if (!pathString) return "/placeholder.jpg";
-    if (pathString.startsWith("uploads/") || pathString.startsWith("/uploads/")) {
-      const cleanPath = pathString.startsWith("/") ? pathString.substring(1) : pathString;
-      return `${API_BASE_URL}/${cleanPath}`;
-    }
-    return `${API_BASE_URL}/uploads/${pathString}`;
-  };
-
   const categoryDepartmentMap: Record<string, string> = {
     Potholes: "Roads",
     Garbage: "Garbage",
@@ -293,10 +283,9 @@ function Issues() {
                     <td className="cell-id">#{issue.id}</td>
                     <td>
                       <img
-                        src={getFullImageUrl(issue.imageUrl)}
+                        src={issue.imageUrl ? `${API_BASE_URL}/uploads/${issue.imageUrl}` : "/placeholder.jpg"}
                         alt={issue.title}
                         className="table-thumb"
-                        onError={(e) => { e.currentTarget.src = "/placeholder.jpg"; }}
                       />
                     </td>
                     <td>
@@ -339,7 +328,7 @@ function Issues() {
         </div>
       )}
 
-      {/* ── Modal ── */}
+      {/* ── Modal: light, single-column, professional ── */}
       {selectedIssue && (
         <div className="modal-overlay" onClick={() => setSelectedIssue(null)}>
           <div className="modal-shell" onClick={(e) => e.stopPropagation()}>
@@ -358,10 +347,9 @@ function Issues() {
               {/* Top: image + summary side by side */}
               <div className="modal-summary-row">
                 <img
-                  src={getFullImageUrl(selectedIssue.imageUrl)}
+                  src={selectedIssue.imageUrl ? `${API_BASE_URL}/uploads/${selectedIssue.imageUrl}` : "/placeholder.jpg"}
                   alt={selectedIssue.title}
                   className="modal-thumb"
-                  onError={(e) => { e.currentTarget.src = "/placeholder.jpg"; }}
                 />
                 <div className="modal-summary-text">
                   <div className="modal-cat-row">
@@ -407,12 +395,7 @@ function Issues() {
                     <img src={URL.createObjectURL(proofImage)} alt="Proof Preview" className="proof-preview" />
                   )}
                   {selectedIssue.proofImage && !proofImage && (
-                    <img 
-                      src={getFullImageUrl(selectedIssue.proofImage)} 
-                      alt="Saved Proof" 
-                      className="proof-preview" 
-                      onError={(e) => { e.currentTarget.src = "/placeholder.jpg"; }}
-                    />
+                    <img src={`${API_BASE_URL}/uploads/${selectedIssue.proofImage}`} alt="Saved Proof" className="proof-preview" />
                   )}
                 </div>
               )}
