@@ -1,7 +1,11 @@
 package com.fixmycity_api.config;
+<<<<<<< HEAD
 
 import org.springframework.context.annotation.Bean;
+=======
+>>>>>>> f4b622b (Fix missing imports and add necessary annotations to backend code)
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;

@@ -3,8 +3,14 @@ package com.fixmycity_api.assignment;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Assignment {
 
     @Id
@@ -18,6 +24,4 @@ public class Assignment {
     private String workerName;
 
     private LocalDateTime assignedAt;
-
-    // getters setters
 }
