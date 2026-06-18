@@ -18,8 +18,10 @@ public class IssueService {
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
 
-    // Fixed path logic targeting the global root workspace upload folder
-    private final Path globalUploadPath = Paths.get("../../uploads").toAbsolutePath().normalize();
+    // Dynamically choose path: steps out on Replit workspace structures, falls back to standard execution path locally
+    private final Path globalUploadPath = Files.exists(Paths.get("../../frontend")) ?
+            Paths.get("../../uploads").toAbsolutePath().normalize() :
+            Paths.get("uploads").toAbsolutePath().normalize();
 
     public IssueService(IssueRepository issueRepository, UserRepository userRepository) {
         this.issueRepository = issueRepository;
