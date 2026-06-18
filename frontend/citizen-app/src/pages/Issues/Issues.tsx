@@ -53,7 +53,7 @@ function Issues() {
 
   // Helper utility function to parse dynamic file location paths properly
   const getFullImageUrl = (pathString: string | undefined) => {
-    if (!pathString) return "/placeholder.jpg";
+    if (!pathString) return "https://placehold.co/600x400?text=No+Image+Available";
     if (pathString.startsWith("uploads/") || pathString.startsWith("/uploads/")) {
       const cleanPath = pathString.startsWith("/") ? pathString.substring(1) : pathString;
       return `${API_BASE_URL}/${cleanPath}`;
@@ -65,8 +65,8 @@ function Issues() {
   const statuses   = [ALL, "Reported", "In Progress", "Resolved"];
 
   const filtered = issues.filter((issue) => {
-    const matchSearch   = (issue.title ?? "").toLowerCase().includes(search.toLowerCase()) ||
-                          (issue.location ?? "").toLowerCase().includes(search.toLowerCase());
+    const matchSearch = (issue.title ?? "").toLowerCase().includes(search.toLowerCase()) ||
+                        (issue.location ?? "").toLowerCase().includes(search.toLowerCase());
     const matchStatus   = filterStatus === ALL   || issue.status === filterStatus;
     const matchCategory = filterCategory === ALL || issue.category === filterCategory;
     return matchSearch && matchStatus && matchCategory;
@@ -187,7 +187,10 @@ function Issues() {
                   src={getFullImageUrl(issue.imageUrl)}
                   alt={issue.title}
                   className="issue-image"
-                  onError={(e) => { e.currentTarget.src = "/placeholder.jpg"; }}
+                  onError={(e) => { 
+                    e.currentTarget.onerror = null; // ✨ Breaks infinite loop immediately
+                    e.currentTarget.src = "https://placehold.co/600x400?text=No+Image+Available"; 
+                  }}
                 />
 
                 <div className="issue-card-top">
@@ -250,7 +253,10 @@ function Issues() {
               src={getFullImageUrl(selectedIssue.imageUrl)}
               alt={selectedIssue.title}
               className="modal-image"
-              onError={(e) => { e.currentTarget.src = "/placeholder.jpg"; }}
+              onError={(e) => { 
+                e.currentTarget.onerror = null; // ✨ Breaks loop inside modal
+                e.currentTarget.src = "https://placehold.co/600x400?text=No+Image+Available"; 
+              }}
             />
 
             <div className="modal-info">
@@ -283,7 +289,10 @@ function Issues() {
                   src={getFullImageUrl(selectedIssue.proofImage)}
                   alt="Completed Work"
                   className="completed-proof-image"
-                  onError={(e) => { e.currentTarget.src = "/placeholder.jpg"; }}
+                  onError={(e) => { 
+                    e.currentTarget.onerror = null; 
+                    e.currentTarget.src = "https://placehold.co/600x400?text=No+Image+Available"; 
+                  }}
                 />
               </div>
             )}
