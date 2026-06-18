@@ -1,11 +1,7 @@
 package com.fixmycity_api.config;
-<<<<<<< HEAD
 
 import org.springframework.context.annotation.Bean;
-=======
->>>>>>> f4b622b (Fix missing imports and add necessary annotations to backend code)
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -23,20 +19,22 @@ public class SecurityConfig {
         http
             // 1. Enable CORS configuration defined below
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            
+
             // 2. Disable CSRF (essential for stateless REST APIs)
             .csrf(csrf -> csrf.disable())
-            
+
             // 3. Define authorization rules
             .authorizeHttpRequests(auth -> auth
                 // Explicitly allow preflight OPTIONS requests used by browsers during CORS checks
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // Permit all endpoints under /api/auth/
                 .requestMatchers("/api/auth/**").permitAll()
+                // Permit static file downloads from the uploads directory
+                .requestMatchers("/uploads/**").permitAll()
                 // Permit any other requests for debugging (restrict this later if needed)
                 .anyRequest().permitAll()
             )
-            
+
             // 4. Disable form login as you are using a decoupled frontend
             .formLogin(form -> form.disable());
 
@@ -46,23 +44,23 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
+
         // Allows requests from any origin (ideal for Replit's dynamic URLs)
         configuration.setAllowedOriginPatterns(Arrays.asList("*")); 
-        
+
         // Allows common HTTP methods used by your React frontends
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        
+
         // Required headers for typical JSON API operations and authentication tokens
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
-        
+
         // Allows browser clients to send credentials (like cookies or auth headers) if needed
         configuration.setAllowCredentials(true);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         // Apply this exact configuration to all paths in the backend API
         source.registerCorsConfiguration("/**", configuration);
-        
+
         return source;
     }
 }
