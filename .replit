@@ -80,5 +80,5 @@ externalPort = 8080
 deploymentTarget = "autoscale"
 # Builds all three applications cleanly
 build = ["bash", "-c", "cd frontend/admin-app && npm install && npm run build && cd ../citizen-app && npm install && npm run build && cd ../../backend/fixmycity-api && chmod +x mvnw && ./mvnw clean package -DskipTests -q"]
-# Runs all three production apps simultaneously in the background using text streams
-run = ["bash", "-c", "cd backend/fixmycity-api && ./mvnw spring-boot:run & cd frontend/admin-app && npx serve -s dist -l 5173 & cd ../citizen-app && npx serve -s dist -l 5174"]
+# Runs all three production apps simultaneously using the pre-compiled JAR and correct directory stepping
+run = ["bash", "-c", "cd backend/fixmycity-api && java -jar target/*.jar & cd ../../frontend/admin-app && npx serve -s dist -l 5173 & cd ../citizen-app && npx serve -s dist -l 5174"]
