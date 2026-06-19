@@ -5,17 +5,13 @@ import {
   useMapEvents,
   useMap,
 } from "react-leaflet";
-
 import { useState, useEffect } from "react";
-import { LatLngExpression } from "leaflet";
+import { LatLngExpression, LeafletMouseEvent } from "leaflet";
 
 interface Props {
   latitude: number | null;
   longitude: number | null;
-  onLocationSelect: (
-    lat: number,
-    lng: number
-  ) => void;
+  onLocationSelect: (lat: number, lng: number) => void;
 }
 
 function LocationMarker({
@@ -23,40 +19,24 @@ function LocationMarker({
   latitude,
   longitude,
 }: Props) {
-  const [position, setPosition] =
-    useState<LatLngExpression | null>(
-      latitude !== null &&
-      longitude !== null
-        ? [latitude, longitude]
-        : null
-    );
+  const [position, setPosition] = useState<LatLngExpression | null>(
+    latitude !== null && longitude !== null ? [latitude, longitude] : null
+  );
 
   useEffect(() => {
-    if (
-      latitude !== null &&
-      longitude !== null
-    ) {
-      setPosition([
-        latitude,
-        longitude,
-      ]);
+    if (latitude !== null && longitude !== null) {
+      setPosition([latitude, longitude]);
     }
   }, [latitude, longitude]);
 
   useMapEvents({
-    click(e) {
+    click(e: LeafletMouseEvent) {
       setPosition(e.latlng);
-
-      onLocationSelect(
-        e.latlng.lat,
-        e.latlng.lng
-      );
+      onLocationSelect(e.latlng.lat, e.latlng.lng);
     },
   });
 
-  return position ? (
-    <Marker position={position} />
-  ) : null;
+  return position ? <Marker position={position} /> : null;
 }
 
 function RecenterMap({
@@ -69,14 +49,8 @@ function RecenterMap({
   const map = useMap();
 
   useEffect(() => {
-    if (
-      latitude !== null &&
-      longitude !== null
-    ) {
-      map.setView(
-        [latitude, longitude],
-        16
-      );
+    if (latitude !== null && longitude !== null) {
+      map.setView([latitude, longitude], 16);
     }
   }, [latitude, longitude, map]);
 
@@ -90,15 +64,17 @@ function MapPicker({
 }: Props) {
   return (
     <MapContainer
-      center={[17.385, 78.4867]}
-      zoom={11}
-      minZoom={10}
-      maxZoom={18}
-      maxBounds={[
-        [17.0, 78.0],
-        [17.8, 79.0],
-      ]}
-      maxBoundsViscosity={1.0}
+      {...{
+        center: [17.385, 78.4867],
+        zoom: 11,
+        minZoom: 10,
+        maxZoom: 18,
+        maxBounds: [
+          [17.0, 78.0],
+          [17.8, 79.0],
+        ],
+        maxBoundsViscosity: 1.0,
+      } as any}
       style={{
         height: "350px",
         width: "100%",
@@ -106,21 +82,18 @@ function MapPicker({
       }}
     >
       <TileLayer
-        attribution="&copy; OpenStreetMap contributors"
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        {...{
+          attribution: "© OpenStreetMap contributors",
+          url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        } as any}
       />
 
-      <RecenterMap
-        latitude={latitude}
-        longitude={longitude}
-      />
+      <RecenterMap latitude={latitude} longitude={longitude} />
 
       <LocationMarker
         latitude={latitude}
         longitude={longitude}
-        onLocationSelect={
-          onLocationSelect
-        }
+        onLocationSelect={onLocationSelect}
       />
     </MapContainer>
   );

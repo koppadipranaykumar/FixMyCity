@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Issues.css";
-import logo from "../../assets/logo.png";
 import API_BASE_URL from "../../config/api";
 
 interface Issue {
@@ -19,6 +17,7 @@ interface Issue {
   latitude?: number;
   longitude?: number;
 }
+
 const categoryIcon: Record<string, string> = {
   "Potholes":        "🕳️",
   "Garbage":         "🗑️",
@@ -37,10 +36,9 @@ const statusConfig: Record<string, { label: string; cls: string }> = {
 const ALL = "All";
 
 function Issues() {
-  const navigate = useNavigate();
-  const [issues, setIssues]           = useState<Issue[]>([]);
-  const [loading, setLoading]         = useState(true);
-  const [search, setSearch]           = useState("");
+  const [issues, setIssues] = useState<Issue[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState(ALL);
   const [filterCategory, setFilterCategory] = useState(ALL);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
@@ -51,13 +49,22 @@ function Issues() {
       .catch(() => setLoading(false));
   }, []);
 
+  const getFullImageUrl = (pathString: string | undefined) => {
+    if (!pathString) return "https://placehold.co/600x400?text=No+Image+Available";
+    if (pathString.startsWith("uploads/") || pathString.startsWith("/uploads/")) {
+      const cleanPath = pathString.startsWith("/") ? pathString.substring(1) : pathString;
+      return `${API_BASE_URL}/${cleanPath}`;
+    }
+    return `${API_BASE_URL}/uploads/${pathString}`;
+  };
+
   const categories = [ALL, ...Array.from(new Set(issues.map((i) => i.category)))];
-  const statuses   = [ALL, "Reported", "In Progress", "Resolved"];
+  const statuses = [ALL, "Reported", "In Progress", "Resolved"];
 
   const filtered = issues.filter((issue) => {
-    const matchSearch   = issue.title.toLowerCase().includes(search.toLowerCase()) ||
-                          issue.location.toLowerCase().includes(search.toLowerCase());
-    const matchStatus   = filterStatus === ALL   || issue.status === filterStatus;
+    const matchSearch = (issue.title ?? "").toLowerCase().includes(search.toLowerCase()) ||
+                        (issue.location ?? "").toLowerCase().includes(search.toLowerCase());
+    const matchStatus = filterStatus === ALL || issue.status === filterStatus;
     const matchCategory = filterCategory === ALL || issue.category === filterCategory;
     return matchSearch && matchStatus && matchCategory;
   });
@@ -79,9 +86,6 @@ function Issues() {
   
   return (
     <div className="issues-page">
-
-      
-      {/* Header */}
       <div className="issues-header">
         <div>
           <h1>Civic Issues</h1>
@@ -89,7 +93,6 @@ function Issues() {
         </div>
       </div>
 
-      {/* Stats Row */}
       <div className="issues-stats">
         <div className="stat-pill total">
           <span className="stat-num">{counts.total}</span>
@@ -109,10 +112,9 @@ function Issues() {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="issues-filters">
         <div className="search-box">
-          <span className="search-icon">🔍</span>
+          <span className="search-icon">⌕</span>
           <input
             type="text"
             placeholder="Search by title or location…"
@@ -149,19 +151,17 @@ function Issues() {
         </select>
       </div>
 
-      {/* Results count */}
       <p className="results-count">
         {loading ? "Loading…" : `${filtered.length} issue${filtered.length !== 1 ? "s" : ""} found`}
       </p>
 
-      {/* Cards Grid */}
       {loading ? (
         <div className="issues-loading">
-          {[1,2,3].map((n) => <div key={n} className="skeleton-card" />)}
+          {[1, 2, 3].map((n) => <div key={n} className="skeleton-card" />)}
         </div>
       ) : filtered.length === 0 ? (
         <div className="issues-empty">
-          <span>🔎</span>
+          <span>🔍</span>
           <p>No issues match your filters.</p>
           <button onClick={() => { setSearch(""); setFilterStatus(ALL); setFilterCategory(ALL); }}>
             Clear filters
@@ -173,20 +173,18 @@ function Issues() {
             const sc = statusConfig[issue.status] ?? { label: issue.status, cls: "reported" };
             return (
               <div className="issue-card" key={issue.id}>
-
                 <img
-                  src={
-                    issue.imageUrl
-                      ?  `${API_BASE_URL}/uploads/${issue.imageUrl}`
-                      : "/placeholder.jpg"
-                  }
+                  src={getFullImageUrl(issue.imageUrl)}
                   alt={issue.title}
                   className="issue-image"
+                  onError={(e) => { 
+                    e.currentTarget.onerror = null; 
+                    e.currentTarget.src = "https://placehold.co/600x400?text=No+Image+Available"; 
+                  }}
                 />
-
                 <div className="issue-card-top">
                   <div className="issue-cat-badge">
-                    <span>{categoryIcon[issue.category] ?? "📌"}</span>
+                    <span>{categoryIcon[issue.category] ?? "•"}</span>
                     <span>{issue.category}</span>
                   </div>
                   <span className={`issue-status ${sc.cls}`}>{sc.label}</span>
@@ -194,115 +192,85 @@ function Issues() {
 
                 <h2 className="issue-title">{issue.title}</h2>
                 <p className="issue-desc">{issue.description}</p>
-
                 <div className="issue-meta">
                   <span className="issue-location">📍 {issue.location}</span>
                 </div>
-
                 <div className="issue-actions">
                   <button className="action-btn map-btn" onClick={() => openMap(issue)}>
                     🗺 View Map
                   </button>
-				  <button
-				    className="action-btn details-btn"
-				    onClick={() =>
-				      setSelectedIssue(issue)
-				    }
-				  >
-				    Details →
-				  </button>
+                  <button className="action-btn details-btn" onClick={() => setSelectedIssue(issue)}>
+                    Details →
+                  </button>
                 </div>
-
               </div>
             );
           })}
         </div>
       )}
-	         
 
-	        {selectedIssue && (
-	          <div
-	            className="issue-modal-overlay"
-	            onClick={() => setSelectedIssue(null)}
-	          >
-	            <div
-	              className="issue-modal"
-	              onClick={(e) => e.stopPropagation()}
-	            >
-	              <div className="modal-header">
-	                <h2 className="modal-title">
-	                  {selectedIssue.title}
-	                </h2>
+      {selectedIssue && (
+        <div className="issue-modal-overlay" onClick={() => setSelectedIssue(null)}>
+          <div className="issue-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{selectedIssue.title}</h2>
+              <button className="modal-close" onClick={() => setSelectedIssue(null)}>✕</button>
+            </div>
 
-	                <button
-	                  className="modal-close"
-	                  onClick={() => setSelectedIssue(null)}
-	                >
-	                  ✕
-	                </button>
-	              </div>
+            <img
+              src={getFullImageUrl(selectedIssue.imageUrl)}
+              alt={selectedIssue.title}
+              className="modal-image"
+              onError={(e) => { 
+                e.currentTarget.onerror = null; 
+                e.currentTarget.src = "https://placehold.co/600x400?text=No+Image+Available"; 
+              }}
+            />
 
-	              <img
-	                src={
-	                  selectedIssue.imageUrl
-	                    ?  `${API_BASE_URL}/uploads/${selectedIssue.imageUrl}`
-	                    : "/placeholder.jpg"
-	                }
-	                alt={selectedIssue.title}
-	                className="modal-image"
-	              />
+            <div className="modal-info">
+              <div><span>Category</span>{selectedIssue.category}</div>
+              <div><span>Status</span>{selectedIssue.status}</div>
+              <div><span>Location</span>{selectedIssue.location}</div>
+            </div>
 
-	              <div className="modal-info">
-	                <div><span>Category</span>{selectedIssue.category}</div>
-	                <div><span>Status</span>{selectedIssue.status}</div>
-	                <div><span>Location</span>{selectedIssue.location}</div>
-	              </div>
+            <div className="modal-section">
+              <h4>Description</h4>
+              <p>{selectedIssue.description}</p>
+            </div>
+            {selectedIssue.assignedWorker && (
+              <div className="modal-section">
+                <h4>Assigned Worker</h4>
+                <p>{selectedIssue.assignedWorker}</p>
+              </div>
+            )}
+            {selectedIssue.resolutionNote && (
+              <div className="modal-section">
+                <h4>Resolution Note</h4>
+                <p>{selectedIssue.resolutionNote}</p>
+              </div>
+            )}
+            {selectedIssue.proofImage && (
+              <div className="modal-section">
+                <h4>Completed Work Proof</h4>
+                <img
+                  src={getFullImageUrl(selectedIssue.proofImage)}
+                  alt="Completed Work"
+                  className="completed-proof-image"
+                  onError={(e) => { 
+                    e.currentTarget.onerror = null; 
+                    e.currentTarget.src = "https://placehold.co/600x400?text=No+Image+Available"; 
+                  }}
+                />
+              </div>
+            )}
+            <button className="modal-map-btn" onClick={() => openMap(selectedIssue)}>
+              Open Location
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
-	              <div className="modal-section">
-	                <h4>Description</h4>
-	                <p>{selectedIssue.description}</p>
-	              </div>
-				  {selectedIssue.assignedWorker && (
-				    <div className="modal-section">
-				      <h4>Assigned Worker</h4>
-				      <p>{selectedIssue.assignedWorker}</p>
-				    </div>
-				  )}
-
-				  {selectedIssue.resolutionNote && (
-				    <div className="modal-section">
-				      <h4>Resolution Note</h4>
-				      <p>{selectedIssue.resolutionNote}</p>
-				    </div>
-				  )}
-				  {selectedIssue.proofImage && (
-				    <div className="modal-section">
-
-				      <h4>Completed Work Proof</h4>
-
-				      <img
-				        src={ `${API_BASE_URL}/uploads/${selectedIssue.proofImage}`}
-				        alt="Completed Work"
-				        className="completed-proof-image"
-				      />
-
-				    </div>
-				  )}
-
-				  
-
-				  
-	              <button
-	                className="modal-map-btn"
-	                onClick={() => openMap(selectedIssue)}
-	              >
-	                Open Location
-	              </button>
-	            </div>
-	          </div>
-	        )}
-	      </div>
-	    );
-	  }
-
-	  export default Issues;
+export default Issues;
