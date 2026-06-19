@@ -177,7 +177,7 @@ function Issues() {
                 <img
                   src={
                     issue.imageUrl
-                      ?  `${API_BASE_URL}:8080/uploads/${issue.imageUrl}`
+                      ?  `/uploads/${issue.imageUrl}`
                       : "/placeholder.jpg"
                   }
                   alt={issue.title}
@@ -245,7 +245,7 @@ function Issues() {
 	              <img
 	                src={
 	                  selectedIssue.imageUrl
-	                    ?  `${API_BASE_URL}/uploads/${selectedIssue.imageUrl}`
+	                    ?  `/uploads/${selectedIssue.imageUrl}`
 	                    : "/placeholder.jpg"
 	                }
 	                alt={selectedIssue.title}
@@ -281,7 +281,7 @@ function Issues() {
 				      <h4>Completed Work Proof</h4>
 
 				      <img
-				        src={ `${API_BASE_URL}/uploads/${selectedIssue.proofImage}`}
+				        src={ `/uploads/${selectedIssue.proofImage}`}
 				        alt="Completed Work"
 				        className="completed-proof-image"
 				      />
