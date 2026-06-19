@@ -97,7 +97,5 @@ externalPort = 8080
 
 [deployment]
 deploymentTarget = "autoscale"
-# Builds all three applications cleanly
-build = ["bash", "-c", "cd frontend/admin-app && npm install && npm run build && cd ../citizen-app && npm install && npm run build && cd ../../backend/fixmycity-api && chmod +x mvnw && ./mvnw clean package -DskipTests -q"]
-# Runs all three production apps simultaneously using the pre-compiled JAR and correct directory stepping
-run = ["bash", "-c", "cd backend/fixmycity-api && java -jar target/*.jar & cd ../../frontend/admin-app && npx serve -s dist -l 5173 & cd ../citizen-app && npx serve -s dist -l 5174"]
+build = ["bash", "-c", "cd frontend/citizen-app && npm install && npm run build && cd ../admin-app && npm install && npm run build && cd ../../backend/fixmycity-api && chmod +x mvnw && ./mvnw package -DskipTests -q"]
+run = ["bash", "-c", "cd backend/fixmycity-api && java -jar target/fixmycity-api-0.0.1-SNAPSHOT.jar --server.port=5000"]

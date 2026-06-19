@@ -16,7 +16,7 @@ import AdminLayout from "../layouts/AdminLayout";
 
 function AppRoutes() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
 
         {/* Default Route */}

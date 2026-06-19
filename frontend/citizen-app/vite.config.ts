@@ -3,14 +3,15 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-
+  base: "/",
+  build: {
+    outDir: "../../backend/fixmycity-api/src/main/resources/static",
+    emptyOutDir: true,
+  },
   server: {
     host: "0.0.0.0",
-
-    allowedHosts: [
-      "c0c679cd-f0e6-47aa-ba87-f6e48d432c3d-00-3rikrql6o8jgs.sisko.replit.dev"
-    ],
-
+    port: 5173,
+    allowedHosts: true,
     proxy: {
       "/api": {
         target: "http://localhost:8080",
@@ -19,7 +20,6 @@ export default defineConfig({
       "/uploads": {
         target: "http://localhost:8080",
         changeOrigin: true,
-		
       },
     },
   },
