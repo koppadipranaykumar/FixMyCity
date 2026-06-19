@@ -259,3 +259,33 @@
   transition: color 0.15s;
 }
 .back-btn:hover { color: #1d4ed8; }
+
+/* =====================================================
+   RESPONSIVE LAYOUT SPECIFICATION UPDATES
+===================================================== */
+@media (max-width: 900px) {
+  .auth-left {
+    padding: 40px;
+  }
+  .auth-left-content h2 {
+    font-size: 28px;
+  }
+  .auth-stats {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-page {
+    flex-direction: column;
+    
+  }
+  .auth-left {
+    display: none; /* Collapses decorative split section on standard phone widths */
+    width: 100%;
+  }
+  .auth-right {
+    padding: 40px 20px;
+    background: #ffffff;
+  }
+}

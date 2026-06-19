@@ -12,98 +12,49 @@ function Login() {
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (
-    e: React.FormEvent
-  ) => {
-
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
     setLoading(true);
 
     try {
-
-      const response =
-        await axios.post(
-          `${API_BASE_URL}/api/admin/login`,
-          {
-            email,
-            password
-          }
-        );
-
-      const result =
-        response.data;
-
-      console.log(
-        "Backend Response:",
-        result
+      const response = await axios.post(
+        `${API_BASE_URL}/api/admin/login`,
+        {
+          email,
+          password
+        }
       );
 
-      if (
-        result ===
-        "Admin Login Successful"
-      ) {
+      const result = response.data;
 
-        localStorage.setItem(
-          "adminLoggedIn",
-          "true"
-        );
+      console.log("Backend Response:", result);
 
-        setMessage(
-          "Admin Login Successful"
-        );
-
+      if (result === "Admin Login Successful") {
+        localStorage.setItem("adminLoggedIn", "true");
+        setMessage("Admin Login Successful");
         setIsError(false);
 
         setTimeout(() => {
-
           navigate("/dashboard");
-
         }, 500);
-
-      }
-      else if (
-        result ===
-        "User not found"
-      ) {
-
-        setMessage(
-          "Account not found. Please register first."
-        );
-
+      } else if (result === "User not found") {
+        setMessage("Account not found. Please register first.");
         setIsError(true);
 
         setTimeout(() => {
-
           navigate("/register");
-
         }, 2000);
-
-      }
-      else {
-
+      } else {
         setMessage(result);
-
         setIsError(true);
-
       }
-
     } catch (error) {
-
       console.error(error);
-
-      setMessage(
-        "Invalid email or password. Please try again."
-      );
-
+      setMessage("Invalid email or password. Please try again.");
       setIsError(true);
-
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
   return (
