@@ -8,6 +8,7 @@ function Navbar() {
   const location = useLocation();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // Added mobile menu state
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -22,7 +23,7 @@ function Navbar() {
   const avatarLetter = userEmail?.charAt(0).toUpperCase() || "U";
   const displayName = userEmail?.split("@")[0] || "";
 
-  // Close dropdown when clicking outside
+  // Close dropdown and mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -40,21 +41,36 @@ function Navbar() {
     };
   }, []);
 
+  // Automatically close mobile menu when changing pages
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location]);
+
   const isActive = (path: string): boolean => {
     return location.pathname === path;
   };
 
   return (
     <nav className="navbar">
-      {/* Logo */}
-      <div className="navbar-logo">
-        <Link to="/">
-          <img src={logo} alt="FixMyCity" className="logo-img" />
-        </Link>
+      {/* Left Area: Logo & Hamburger button */}
+      <div className="navbar-left">
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? "✕" : "☰"}
+        </button>
+
+        <div className="navbar-logo">
+          <Link to="/">
+            <img src={logo} alt="FixMyCity" className="logo-img" />
+          </Link>
+        </div>
       </div>
 
-      {/* Nav Links */}
-      <div className="nav-links">
+      {/* Nav Links (Toggled with conditional className on mobile) */}
+      <div className={`nav-links ${mobileMenuOpen ? "mobile-open" : ""}`}>
         <Link
           to="/"
           className={`nav-link ${isActive("/") ? "active" : ""}`}

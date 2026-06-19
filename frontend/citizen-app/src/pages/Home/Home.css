@@ -44,16 +44,15 @@ body {
 .home {
   width: 100%;
   min-height: 100vh;
+  padding-top: 68px; /* Safe padding spacing offset to clear the sticky navbar layout */
 }
 
 
 /* ── HERO ────────────────────────────────────────────────── */
 
-
 .hero {
-	
   width: 100%;
-  padding: 40px 48px 100px;
+  padding: 0px 48px 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -98,9 +97,9 @@ body {
 
 .hero h1 {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(42px, 5.5vw, 64px);
+  font-size: clamp(34px, 5.5vw, 64px); /* Optimized down slightly for tight displays */
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.15;
   letter-spacing: -1.5px;
   color: var(--slate-900);
   max-width: 820px;
@@ -131,7 +130,6 @@ body {
   position: relative;
   z-index: 1;
 }
-
 
 .primary-btn {
   display: inline-flex;
@@ -378,4 +376,115 @@ footer {
 footer strong {
   color: var(--white);
   font-weight: 500;
+}
+
+/* =====================================================
+   ADDED RESPONSIVE MEDIA QUERIES
+===================================================== */
+
+@media (max-width: 1024px) {
+  .hero {
+    padding: 60px 32px 80px;
+  }
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .categories, .recent-issues {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home {
+    padding-top: 64px; /* Matches lower mobile menu height adjustment */
+  }
+  .hero {
+    padding: 48px 24px 64px;
+  }
+  .hero-badge {
+    margin-bottom: 24px;
+  }
+  .hero p {
+    font-size: 16px;
+    margin-bottom: 32px;
+  }
+  .stats-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stat-item {
+    padding: 24px 16px;
+  }
+  .stat-item h3 {
+    font-size: 32px;
+  }
+  .categories, .recent-issues {
+    padding-top: 48px;
+    padding-bottom: 48px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .section-title {
+    font-size: 30px;
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 36px 16px 48px;
+  }
+  .hero h1 {
+    font-size: 28px;
+    letter-spacing: -1px;
+  }
+  .hero p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+  .primary-btn, .secondary-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  .stats-strip {
+    grid-template-columns: 1fr;
+  }
+  .category-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .card {
+    padding: 20px 16px;
+    gap: 14px;
+  }
+  .card-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+  .issues-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .issue-card {
+    padding: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .status-badge {
+    align-self: flex-start;
+  }
+  footer {
+    padding: 24px 16px;
+    font-size: 12px;
+  }
 }
