@@ -5,6 +5,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import API_BASE_URL from "../../config/api";
 
+interface Issue {
+  id: number;
+  title: string;
+  location: string;
+  status: string;
+}
+
 const categories = [
   {
     icon: "🕳️",
@@ -57,24 +64,42 @@ const stats = [
   },
 ];
 
-// Map API status values to dot class and badge label
-const statusConfig = {
-  "Reported":    { cls: "reported", label: "Reported" },
-  "In Progress": { cls: "progress", label: "In Progress" },
-  "Resolved":    { cls: "resolved", label: "Resolved" },
+const statusConfig: Record<
+  string,
+  { cls: string; label: string }
+> = {
+  Reported: {
+    cls: "reported",
+    label: "Reported",
+  },
+  "In Progress": {
+    cls: "progress",
+    label: "In Progress",
+  },
+  Resolved: {
+    cls: "resolved",
+    label: "Resolved",
+  },
 };
 
 function Home() {
   const navigate = useNavigate();
-  const [recentIssues, setRecentIssues] = useState([]);
-  const [loadingIssues, setLoadingIssues] = useState(true);
+
+  const [recentIssues, setRecentIssues] =
+    useState<Issue[]>([]);
+
+  const [loadingIssues, setLoadingIssues] =
+    useState(true);
 
   useEffect(() => {
-    axios.get( `${API_BASE_URL}/api/issues`)
+    axios
+      .get(`${API_BASE_URL}/api/issues`)
       .then((r) => {
-        // Take the last 3 issues as "recent" (or slice however many you want)
-        const all = r.data;
-        const recent = all.slice(-3).reverse(); // newest first
+        const all: Issue[] = r.data;
+        const recent = all
+          .slice(-3)
+          .reverse();
+
         setRecentIssues(recent);
         setLoadingIssues(false);
       })
@@ -85,7 +110,6 @@ function Home() {
 
   return (
     <div className="home">
-      
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-badge">
@@ -99,22 +123,28 @@ function Home() {
         </h1>
 
         <p>
-          Report potholes, garbage dumps, streetlight failures,
-          water leaks and other public issues — straight to the
-          people who fix them.
+          Report potholes, garbage dumps,
+          streetlight failures, water leaks
+          and other public issues —
+          straight to the people who fix
+          them.
         </p>
 
         <div className="hero-buttons">
           <button
             className="primary-btn"
-            onClick={() => navigate("/report")}
+            onClick={() =>
+              navigate("/report")
+            }
           >
             Report an Issue →
           </button>
 
           <button
             className="secondary-btn"
-            onClick={() => navigate("/issues")}
+            onClick={() =>
+              navigate("/issues")
+            }
           >
             View Issues
           </button>
@@ -173,7 +203,9 @@ function Home() {
 
             <h2
               className="section-title"
-              style={{ marginBottom: 0 }}
+              style={{
+                marginBottom: 0,
+              }}
             >
               Recent Issues
             </h2>
@@ -189,55 +221,84 @@ function Home() {
 
         <div className="issues-list">
           {loadingIssues ? (
-            <p style={{ color: "var(--slate-400)", fontSize: 14 }}>
+            <p
+              style={{
+                color:
+                  "var(--slate-400)",
+                fontSize: 14,
+              }}
+            >
               Loading recent issues…
             </p>
-          ) : recentIssues.length === 0 ? (
-            <p style={{ color: "var(--slate-400)", fontSize: 14 }}>
+          ) : recentIssues.length ===
+            0 ? (
+            <p
+              style={{
+                color:
+                  "var(--slate-400)",
+                fontSize: 14,
+              }}
+            >
               No issues reported yet.
             </p>
           ) : (
-            recentIssues.map((issue) => {
-              const sc =
-                statusConfig[issue.status] ?? {
-                  cls: "reported",
-                  label: issue.status,
-                };
-              return (
-                <div
-                  className="issue-card"
-                  key={issue.id}
-                >
-                  <div className="issue-info">
-                    <span className={`issue-dot ${sc.cls}`} />
+            recentIssues.map(
+              (issue: Issue) => {
+                const sc =
+                  statusConfig[
+                    issue.status
+                  ] ?? {
+                    cls: "reported",
+                    label:
+                      issue.status,
+                  };
 
-                    <div>
-                      <div className="issue-title">
-                        {issue.title}
-                      </div>
+                return (
+                  <div
+                    className="issue-card"
+                    key={issue.id}
+                  >
+                    <div className="issue-info">
+                      <span
+                        className={`issue-dot ${sc.cls}`}
+                      />
 
-                      <div className="issue-meta">
-                        {issue.location}
+                      <div>
+                        <div className="issue-title">
+                          {
+                            issue.title
+                          }
+                        </div>
+
+                        <div className="issue-meta">
+                          {
+                            issue.location
+                          }
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <span
-                    className={`status-badge status-${sc.cls}`}
-                  >
-                    {sc.label}
-                  </span>
-                </div>
-              );
-            })
+                    <span
+                      className={`status-badge status-${sc.cls}`}
+                    >
+                      {sc.label}
+                    </span>
+                  </div>
+                );
+              }
+            )
           )}
         </div>
       </section>
 
       {/* Footer */}
       <footer>
-        © 2026 <strong>FixMyCity</strong> — Smart Civic
-        Reporting Platform
+        © 2026{" "}
+        <strong>
+          FixMyCity
+        </strong>{" "}
+        — Smart Civic Reporting
+        Platform
       </footer>
     </div>
   );

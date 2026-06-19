@@ -7,6 +7,7 @@ import {
 } from "react-leaflet";
 
 import { useState, useEffect } from "react";
+import { LatLngExpression } from "leaflet";
 
 interface Props {
   latitude: number | null;
@@ -23,7 +24,7 @@ function LocationMarker({
   longitude,
 }: Props) {
   const [position, setPosition] =
-    useState<any>(
+    useState<LatLngExpression | null>(
       latitude !== null &&
       longitude !== null
         ? [latitude, longitude]
@@ -89,7 +90,7 @@ function MapPicker({
 }: Props) {
   return (
     <MapContainer
-      center={[17.3850, 78.4867]}
+      center={[17.385, 78.4867]}
       zoom={11}
       minZoom={10}
       maxZoom={18}
