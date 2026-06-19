@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import API_BASE_URL from "../../config/api";
-
+import logo from "../../assets/logo.png"
 interface Issue {
   id: number;
   title: string;
