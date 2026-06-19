@@ -76,20 +76,8 @@ function Issues() {
     }
   };
 
-  const categoryDepartmentMap: Record<string, string> = {
-    Potholes: "Roads",
-    Garbage: "Garbage",
-    "Street Lights": "Street Lights",
-    "Water Leakage": "Water Leakage",
-    "Traffic Signals": "Traffic Signals",
-    "Public Property": "Public Property",
-  };
-
-  const availableWorkers = selectedIssue
-    ? workers.filter(
-        (w) => w.active && w.department === categoryDepartmentMap[selectedIssue.category]
-      )
-    : [];
+  // Show all active workers — no department filtering to avoid mismatch bugs
+  const availableWorkers = workers.filter((w) => w.active);
 
   const assignWorker = async () => {
     if (!selectedIssue || !worker) {
@@ -123,6 +111,7 @@ function Issues() {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
       fetchIssues();
+      setSelectedIssue(null);
       alert("Issue resolved successfully");
     } catch (err) {
       console.error(err);
@@ -402,7 +391,12 @@ function Issues() {
 
               {/* Assign Worker */}
               <div className="action-block">
-                <p className="action-label">Assign Worker</p>
+                <p className="action-label">
+                  Assign Worker
+                  {availableWorkers.length === 0 && (
+                    <span className="no-workers-hint"> — No active workers found</span>
+                  )}
+                </p>
                 <div className="action-row">
                   <select
                     className="modal-select"
@@ -412,7 +406,9 @@ function Issues() {
                   >
                     <option value="">Select a worker…</option>
                     {availableWorkers.map((w) => (
-                      <option key={w.id} value={w.name}>{w.name} — {w.area}</option>
+                      <option key={w.id} value={w.name}>
+                        {w.name} — {w.department} ({w.area})
+                      </option>
                     ))}
                   </select>
                   <button
