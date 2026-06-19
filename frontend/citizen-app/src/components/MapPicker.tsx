@@ -6,7 +6,7 @@ import {
   useMap,
 } from "react-leaflet";
 import { useState, useEffect } from "react";
-import { LatLngExpression, LeafletMouseEvent } from "leaflet";
+import type { LatLngExpression, LeafletMouseEvent } from "leaflet";
 
 interface Props {
   latitude: number | null;
