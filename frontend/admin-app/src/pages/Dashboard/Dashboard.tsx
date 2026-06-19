@@ -78,6 +78,7 @@ function Dashboard() {
               value={reportedIssues}
               icon="🆕"
               accent=""
+			  
             />
 
             <DashboardCard
