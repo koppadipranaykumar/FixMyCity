@@ -1,4 +1,5 @@
 package com.fixmycity_api.issue;
+
 import com.fixmycity_api.user.User;
 import com.fixmycity_api.user.UserRepository;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class IssueService {
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
 
-    public IssueService(IssueRepository issueRepository,UserRepository userRepository) {
+    public IssueService(IssueRepository issueRepository, UserRepository userRepository) {
         this.issueRepository = issueRepository;
         this.userRepository = userRepository;
     }
@@ -31,16 +32,16 @@ public class IssueService {
     // CREATE ISSUE
 
     public String createIssue(
-    	    String title,
-    	    String description,
-    	    String category,
-    	    String location,
-    	    String userEmail,
-    	    Double latitude,
-    	    Double longitude,
-    	    MultipartFile image,
-    	    String reportedBy
-    	)throws Exception {
+            String title,
+            String description,
+            String category,
+            String location,
+            String userEmail,
+            Double latitude,
+            Double longitude,
+            MultipartFile image,
+            String reportedBy
+    ) throws Exception {
 
         String imageUrl = null;
 
@@ -51,7 +52,8 @@ public class IssueService {
                             + "_"
                             + image.getOriginalFilename();
 
-            Path uploadPath = Paths.get("uploads");
+            Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads");
+            System.out.println(">>> Saving image to: " + uploadPath.toAbsolutePath());
 
             Files.createDirectories(uploadPath);
 
@@ -63,12 +65,13 @@ public class IssueService {
 
             imageUrl = fileName;
         }
+
         User user = userRepository
                 .findByEmail(userEmail)
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
-        Issue issue = new Issue();
 
+        Issue issue = new Issue();
         issue.setTitle(title);
         issue.setDescription(description);
         issue.setCategory(category);
@@ -76,14 +79,10 @@ public class IssueService {
         issue.setUser(user);
         issue.setLatitude(latitude);
         issue.setLongitude(longitude);
-
         issue.setImageUrl(imageUrl);
         issue.setReportedBy(reportedBy);
         issue.setStatus("Reported");
-
-        issue.setReportedAt(
-                LocalDateTime.now()
-        );
+        issue.setReportedAt(LocalDateTime.now());
 
         issueRepository.save(issue);
 
@@ -96,13 +95,11 @@ public class IssueService {
             Long issueId,
             String workerName
     ) {
-
         Issue issue = issueRepository
                 .findById(issueId)
                 .orElseThrow();
 
         issue.setAssignedWorker(workerName);
-
         issue.setStatus("In Progress");
 
         return issueRepository.save(issue);
@@ -115,23 +112,18 @@ public class IssueService {
             String note,
             String proofImage
     ) {
-
         Issue issue = issueRepository
                 .findById(issueId)
                 .orElseThrow();
 
         issue.setStatus("Resolved");
-
         issue.setResolutionNote(note);
-
         issue.setProofImage(proofImage);
-
-        issue.setResolvedAt(
-                LocalDateTime.now()
-        );
+        issue.setResolvedAt(LocalDateTime.now());
 
         return issueRepository.save(issue);
     }
+
     public Issue resolveIssueWithProof(
             Long issueId,
             String note,
@@ -144,21 +136,17 @@ public class IssueService {
 
         String fileName = null;
 
-        if (
-            proofImage != null &&
-            !proofImage.isEmpty()
-        ) {
+        if (proofImage != null && !proofImage.isEmpty()) {
 
             fileName =
                     System.currentTimeMillis()
-                    + "_"
-                    + proofImage.getOriginalFilename();
+                            + "_"
+                            + proofImage.getOriginalFilename();
 
-            Path uploadPath = Paths.get("uploads");
+            Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads");
+            System.out.println(">>> Saving proof image to: " + uploadPath.toAbsolutePath());
 
-            Files.createDirectories(
-                    uploadPath
-            );
+            Files.createDirectories(uploadPath);
 
             Files.copy(
                     proofImage.getInputStream(),
@@ -168,30 +156,20 @@ public class IssueService {
         }
 
         issue.setStatus("Resolved");
-
         issue.setResolutionNote(note);
-
         issue.setProofImage(fileName);
-
-        issue.setResolvedAt(
-                LocalDateTime.now()
-        );
+        issue.setResolvedAt(LocalDateTime.now());
 
         return issueRepository.save(issue);
     }
+
     // DELETE ISSUE
 
-    public void deleteIssue(
-            Long issueId
-    ) {
-
+    public void deleteIssue(Long issueId) {
         issueRepository.deleteById(issueId);
     }
-    public List<Issue> getIssuesByUser(
-            String email
-    ) {
 
-        return issueRepository
-                .findByReportedBy(email);
+    public List<Issue> getIssuesByUser(String email) {
+        return issueRepository.findByReportedBy(email);
     }
 }
