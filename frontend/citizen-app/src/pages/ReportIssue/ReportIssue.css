@@ -314,6 +314,7 @@ input[type="file"]:hover {
   transition: .2s;
 }
 
+
 .ri-btn-ghost:hover,
 .ri-btn-outline:hover {
   background: #f8fafc;

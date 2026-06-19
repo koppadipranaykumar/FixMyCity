@@ -9,6 +9,7 @@ interface Issue {
   title: string;
   location: string;
   status: string;
+  
 }
 
 const categories = [

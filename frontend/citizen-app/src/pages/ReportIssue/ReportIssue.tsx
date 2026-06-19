@@ -273,6 +273,7 @@ function ReportIssue() {
           >
             {loading ? "Loading..." : "Continue →"}
           </button>
+		  
         ) : (
           <button className="ri-btn-primary" onClick={handleSubmit} disabled={!canNext() || loading}>
             {loading ? (<><span className="ri-spinner" /> Submitting...</>) : "Submit Report →"}

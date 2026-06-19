@@ -49,7 +49,9 @@ body {
 
 /* ── HERO ────────────────────────────────────────────────── */
 
+
 .hero {
+	
   width: 100%;
   padding: 40px 48px 100px;
   display: flex;
