@@ -1,11 +1,13 @@
 .dashboard-layout {
   display: flex;
+  width: 100%;
 }
 
 .dashboard-main {
   flex: 1;
   background: #f8fafc;
   min-height: 100vh;
+  
   font-family: 'DM Sans', sans-serif;
 }
 
@@ -37,6 +39,42 @@
 
 .dashboard-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
+}
+
+/* =====================================================
+   RESPONSIVE LAYOUT SPECIFICATION UPDATES
+===================================================== */
+
+@media (max-width: 768px) {
+  
+
+  .dashboard-page {
+    padding: 24px 20px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 28px;
+  }
+
+  .dashboard-content {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-page {
+    padding: 20px 16px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 24px;
+  }
+
+  .dashboard-content {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
 }

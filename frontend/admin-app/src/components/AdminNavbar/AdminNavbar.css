@@ -19,14 +19,25 @@
   box-sizing: border-box;
 }
 
+.admin-navbar-left,
+.admin-navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Hamburger Trigger Hidden by Default */
+.admin-mobile-btn {
+  display: none;
+}
+
 /* LEFT */
 
 .admin-logo {
   display: flex;
   align-items: center;
   gap: 10px;
-
   min-width: 240px;
+  text-decoration: none;
 }
 
 .admin-logo-img {
@@ -48,7 +59,6 @@
   align-items: center;
   justify-content: center;
   gap: 28px;
-
   flex: 1;
 }
 
@@ -63,6 +73,7 @@
   border-radius: 8px;
 
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .admin-link:hover {
@@ -80,21 +91,14 @@
 
 .admin-logout-btn {
   min-width: 120px;
-
   border: none;
-
   background: #2563eb;
   color: white;
-
   padding: 12px 24px;
-
   border-radius: 14px;
-
   font-size: 16px;
   font-weight: 600;
-
   cursor: pointer;
-
   transition: 0.2s;
 }
 
@@ -102,9 +106,13 @@
   background: #1d4ed8;
 }
 
-@media (max-width: 900px) {
+/* =====================================================
+   RESPONSIVE LAYOUT SPECIFICATION UPDATES
+===================================================== */
+
+@media (max-width: 1024px) {
   .admin-navbar {
-    padding: 0 20px;
+    padding: 0 24px;
   }
 
   .admin-links {
@@ -113,9 +121,78 @@
 
   .admin-link {
     font-size: 14px;
+    padding: 6px 10px;
+  }
+
+  .admin-logo {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-navbar {
+    height: 70px; /* Keep height consistent with the desktop layout padding calculations */
+    padding: 0 16px;
+  }
+
+  /* Expose Hamburger Button */
+  .admin-mobile-btn {
+    display: block;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #475569;
+    padding: 4px;
+    margin-right: 8px;
+    line-height: 1;
+  }
+
+  .admin-logo-img {
+    width: 65px;
   }
 
   .admin-logo-text {
+    font-size: 16px;
+  }
+
+  /* Break navbar links pane into an absolute vertical overlay panel */
+  .admin-links {
     display: none;
+    flex-direction: column;
+    width: 100%;
+    background: #ffffff;
+    position: absolute;
+    top: 70px; /* Aligns with navbar bottom border */
+    left: 0;
+    padding: 16px;
+    gap: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #e2e8f0;
+    z-index: 999;
+  }
+
+  .admin-links.mobile-open {
+    display: flex;
+  }
+
+  .admin-link {
+    width: 100%;
+    text-align: left;
+    font-size: 15px;
+    padding: 10px 14px;
+  }
+
+  .admin-logout-btn {
+    min-width: auto;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-logo-text {
+    display: none; /* Safely hides text title on exceptionally narrow mobile views */
   }
 }

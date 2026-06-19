@@ -76,9 +76,8 @@ function Dashboard() {
             <DashboardCard
               title="Reported"
               value={reportedIssues}
-              icon="🆕"
-              accent=""
-			  
+              icon="🚨"
+              accent="reported"
             />
 
             <DashboardCard
