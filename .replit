@@ -5,7 +5,7 @@ stack = "BEST_EFFORT_FALLBACK"
 
 [nix]
 channel = "stable-25_05"
-packages = ["nano"]
+packages = ["nano", "lsof"]
 
 [workflows]
 runButton = "Project"
@@ -17,7 +17,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Start application"
+args = "Admin App"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
@@ -28,16 +28,16 @@ task = "workflow.run"
 args = "Backend API"
 
 [[workflows.workflow]]
-name = "Start application"
+name = "Admin App"
 author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd frontend/admin-app && npm run dev"
-waitForPort = 5000
+waitForPort = 5173
 
 [workflows.workflow.metadata]
-outputType = "webview"
+outputType = "console"
 
 [[workflows.workflow]]
 name = "Citizen App"
@@ -49,7 +49,7 @@ outputType = "console"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd frontend/citizen-app && npm run dev"
-waitForPort = 5173
+waitForPort = 5174
 
 [[workflows.workflow]]
 name = "Backend API"
@@ -63,23 +63,14 @@ waitForPort = 8080
 [workflows.workflow.metadata]
 outputType = "console"
 
+# Clean port mappings matching development and production targets
 [[ports]]
-localPort = 5000
+localPort = 5173
 externalPort = 80
 
 [[ports]]
-localPort = 5173
-externalPort = 5173
-
-[[ports]]
 localPort = 5174
-
-[[ports]]
-localPort = 5175
-externalPort = 3002
-
-[[ports]]
-localPort = 5176
+externalPort = 3000
 
 [[ports]]
 localPort = 8080
@@ -87,5 +78,7 @@ externalPort = 8080
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["bash", "-c", "cd backend/fixmycity-api && ./mvnw spring-boot:run & cd frontend/admin-app && npx serve -s dist -l 5000"]
-build = ["bash", "-c", "cd frontend/admin-app && npm run build && cd frontend/citizen-app && npm run build && cd backend/fixmycity-api && chmod +x mvnw && ./mvnw clean package -DskipTests -q"]
+# Builds all three applications cleanly
+build = ["bash", "-c", "cd frontend/admin-app && npm install && npm run build && cd ../citizen-app && npm install && npm run build && cd ../../backend/fixmycity-api && chmod +x mvnw && ./mvnw clean package -DskipTests -q"]
+# Runs all three production apps simultaneously in the background using text streams
+run = ["bash", "-c", "cd backend/fixmycity-api && ./mvnw spring-boot:run & cd frontend/admin-app && npx serve -s dist -l 5173 & cd ../citizen-app && npx serve -s dist -l 5174"]
