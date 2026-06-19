@@ -469,11 +469,22 @@ footer strong {
     height: 44px;
     font-size: 22px;
   }
+  
+  /* Adjusted alignment blocks for the container header */
   .issues-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 4px; /* Tighten the structural row separation space gap */
+    margin-bottom: 20px;
   }
+  
+  /* Fixed view-all text padding layout alignment on mobile */
+  .view-all-link {
+    padding-bottom: 0;
+    margin-top: 2px;
+    display: inline-block;
+  }
+  
   .issue-card {
     padding: 16px;
     flex-direction: column;

@@ -224,7 +224,7 @@ function Issues() {
               onError={(e) => { 
                 e.currentTarget.onerror = null; 
                 e.currentTarget.src = "https://placehold.co/600x400?text=No+Image+Available"; 
-                  }}
+              }}
             />
 
             <div className="modal-info">
