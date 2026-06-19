@@ -291,6 +291,7 @@ function Issues() {
 
 				  
 
+				  
 	              <button
 	                className="modal-map-btn"
 	                onClick={() => openMap(selectedIssue)}
