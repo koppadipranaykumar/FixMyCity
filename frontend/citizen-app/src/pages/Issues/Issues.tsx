@@ -78,9 +78,9 @@ function Issues() {
 
   const openMap = (issue: Issue) => {
     if (issue.latitude != null && issue.longitude != null) {
-      window.open(`https://www.google.com/maps?q=${issue.latitude},${issue.longitude}`, "_blank");
+      window.open(`https://maps.google.com/?q=${issue.latitude},${issue.longitude}`, "_blank");
     } else {
-      window.open(`https://www.google.com/maps?q=${encodeURIComponent(issue.location)}`, "_blank");
+      window.open(`https://maps.google.com/?q=${encodeURIComponent(issue.location)}`, "_blank");
     }
   };
   
@@ -224,7 +224,7 @@ function Issues() {
               onError={(e) => { 
                 e.currentTarget.onerror = null; 
                 e.currentTarget.src = "https://placehold.co/600x400?text=No+Image+Available"; 
-              }}
+                  }}
             />
 
             <div className="modal-info">

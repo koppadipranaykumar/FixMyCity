@@ -1,6 +1,3 @@
-/* Reuses all shared styles from Login.css */
-/* Copy Login.css as Register.css — all class names are shared via .auth-* */
-
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -269,3 +266,30 @@
   transition: color 0.15s;
 }
 .back-btn:hover { color: #1d4ed8; }
+
+/* =====================================================
+   RESPONSIVE LAYOUT RESPONSIVENESS UPDATES
+===================================================== */
+@media (max-width: 900px) {
+  .auth-left {
+    padding: 40px;
+  }
+  .auth-left-content h2 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-page {
+    flex-direction: column;
+    padding-top: 64px; /* Space clear layout beneath fixed navigation */
+  }
+  .auth-left {
+    display: none; /* Collapses side decoration on standard mobile views */
+    width: 100%;
+  }
+  .auth-right {
+    padding: 32px 20px;
+    background: #ffffff;
+  }
+}

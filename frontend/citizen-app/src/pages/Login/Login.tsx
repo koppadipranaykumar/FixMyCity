@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
 import API_BASE_URL from "../../config/api";
+
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -15,42 +16,36 @@ function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-		const response = await axios.post(
-		  `${API_BASE_URL}/api/auth/login`,
-		  {
-		    email,
-		    password
-		  }
-		);
+      const response = await axios.post(
+        `${API_BASE_URL}/api/auth/login`,
+        {
+          email,
+          password
+        }
+      );
 
-		const result = response.data;
+      const result = response.data;
 
-		if (result === "Login Successful") {
-
-		  localStorage.setItem(
-		    "userEmail",
-		    email
-		  );
-
-		  window.location.href = "/";
-		}
-		else if (result === "User not found") {
-
-		  setMessage(
-		    "Account not found. Please register first."
-		  );
-
-		  setIsError(true);
-
-		  setTimeout(() => {
-		    navigate("/register");
-		  }, 2000);
-		}
-		else {
-
-		  setMessage(result);
-		  setIsError(true);
-		}
+      if (result === "Login Successful") {
+        localStorage.setItem(
+          "userEmail",
+          email
+        );
+        window.location.href = "/";
+      }
+      else if (result === "User not found") {
+        setMessage(
+          "Account not found. Please register first."
+        );
+        setIsError(true);
+        setTimeout(() => {
+          navigate("/register");
+        }, 2000);
+      }
+      else {
+        setMessage(result);
+        setIsError(true);
+      }
     } catch {
       setMessage("Invalid email or password. Please try again.");
       setIsError(true);

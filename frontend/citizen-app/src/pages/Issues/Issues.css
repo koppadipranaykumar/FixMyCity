@@ -2,7 +2,7 @@
   min-height: 100vh;
   background: #f8fafc;
   font-family: 'DM Sans', sans-serif;
-  
+  padding-top: 68px; /* Safe padding spacing offset to clear the sticky navbar layout */
 }
 
 
@@ -10,7 +10,7 @@
 /* ── HEADER ──────────────────────────────────────────────── */
 
 .issues-header {
-  padding: 30px 30px 0;
+  padding: 30px 48px 0;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -527,5 +527,96 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+/* =====================================================
+   RESPONSIVE VIEWS SPECIFICATION ADDITIONS
+===================================================== */
+@media (max-width: 1024px) {
+  .issues-header, .issues-stats, .issues-filters, .results-count, .issues-grid, .issues-loading {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .issues-page {
+    padding-top: 64px;
+  }
+  .issues-header {
+    padding-top: 24px;
+    padding-left: 20px;
+    padding-right: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .issues-header h1 {
+    font-size: 32px;
+  }
+  .issues-stats {
+    padding: 16px 20px 24px;
+    gap: 8px;
+  }
+  .stat-pill {
+    padding: 10px 14px;
+    flex: 1;
+    min-width: 130px;
+  }
+  .issues-filters {
+    padding: 0 20px 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .filter-chips {
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .filter-chips::-webkit-scrollbar {
+    display: none;
+  }
+  .category-select {
+    width: 100%;
+  }
+  .results-count, .issues-grid, .issues-loading {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .issues-grid, .issues-loading {
+    grid-template-columns: 1fr;
+    padding-bottom: 40px;
+  }
+  .modal-info {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .issues-header {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .issues-header h1 {
+    font-size: 26px;
+  }
+  .issues-stats {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .stat-pill {
+    min-width: 45%;
+  }
+  .issues-filters, .results-count, .issues-grid, .issues-loading {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .issue-card {
+    padding: 16px;
+  }
+  .issue-actions {
+    flex-direction: column;
   }
 }

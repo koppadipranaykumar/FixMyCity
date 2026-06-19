@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "./Register.css";
 import API_BASE_URL from "../../config/api";
+
 function Register() {
   const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
