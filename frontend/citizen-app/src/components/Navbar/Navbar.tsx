@@ -87,11 +87,11 @@ function Navbar() {
 
         <Link
           to="/report"
-          className={`nav-link nav-link--highlight ${
+          className={`nav-link ${
             isActive("/report") ? "active" : ""
           }`}
         >
-          <span className="plus-icon">+</span>
+          
           Report Issue
         </Link>
 
@@ -107,8 +107,8 @@ function Navbar() {
         )}
 
         <Link
-          to="/contact"
-          className={`nav-link ${isActive("/contact") ? "active" : ""}`}
+          to="/community"
+          className={`nav-link ${isActive("/community") ? "active" : ""}`}
         >
           Contact
         </Link>
