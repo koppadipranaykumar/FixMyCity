@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "t215UkhTh2fPSneRAsCQm"
+uri = "file://README.md"
+type = "text"
+title = "FixMyCity README.md"
