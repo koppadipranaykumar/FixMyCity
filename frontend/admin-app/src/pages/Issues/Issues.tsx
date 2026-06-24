@@ -272,7 +272,7 @@ function Issues() {
                     <td className="cell-id">#{issue.id}</td>
                     <td>
                       <img
-                        src={issue.imageUrl ? `${API_BASE_URL}/uploads/${issue.imageUrl}` : "/placeholder.jpg"}
+                        src={issue.imageUrl?.startsWith("data:") ? issue.imageUrl : "/placeholder.jpg"}
                         alt={issue.title}
                         className="table-thumb"
                       />
@@ -336,7 +336,7 @@ function Issues() {
               {/* Top: image + summary side by side */}
               <div className="modal-summary-row">
                 <img
-                  src={selectedIssue.imageUrl ? `${API_BASE_URL}/uploads/${selectedIssue.imageUrl}` : "/placeholder.jpg"}
+                  src={selectedIssue.imageUrl?.startsWith("data:") ? selectedIssue.imageUrl : "/placeholder.jpg"}
                   alt={selectedIssue.title}
                   className="modal-thumb"
                 />
@@ -384,7 +384,7 @@ function Issues() {
                     <img src={URL.createObjectURL(proofImage)} alt="Proof Preview" className="proof-preview" />
                   )}
                   {selectedIssue.proofImage && !proofImage && (
-                    <img src={`${API_BASE_URL}/uploads/${selectedIssue.proofImage}`} alt="Saved Proof" className="proof-preview" />
+                    <img src={selectedIssue.proofImage?.startsWith("data:") ? selectedIssue.proofImage : "/placeholder.jpg"} alt="Saved Proof" className="proof-preview" />
                   )}
                 </div>
               )}

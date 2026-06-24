@@ -51,11 +51,8 @@ function Issues() {
 
   const getFullImageUrl = (pathString: string | undefined) => {
     if (!pathString) return "https://placehold.co/600x400?text=No+Image+Available";
-    if (pathString.startsWith("uploads/") || pathString.startsWith("/uploads/")) {
-      const cleanPath = pathString.startsWith("/") ? pathString.substring(1) : pathString;
-      return `${API_BASE_URL}/${cleanPath}`;
-    }
-    return `${API_BASE_URL}/uploads/${pathString}`;
+    if (pathString.startsWith("data:")) return pathString;
+    return "https://placehold.co/600x400?text=No+Image+Available";
   };
 
   const categories = [ALL, ...Array.from(new Set(issues.map((i) => i.category)))];

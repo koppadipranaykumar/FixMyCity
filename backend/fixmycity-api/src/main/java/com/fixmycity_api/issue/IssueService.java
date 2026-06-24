@@ -5,10 +5,7 @@ import com.fixmycity_api.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.util.Base64;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -46,24 +43,9 @@ public class IssueService {
         String imageUrl = null;
 
         if (image != null && !image.isEmpty()) {
-
-            String fileName =
-                    System.currentTimeMillis()
-                            + "_"
-                            + image.getOriginalFilename();
-
-            Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads");
-            System.out.println(">>> Saving image to: " + uploadPath.toAbsolutePath());
-
-            Files.createDirectories(uploadPath);
-
-            Files.copy(
-                    image.getInputStream(),
-                    uploadPath.resolve(fileName),
-                    StandardCopyOption.REPLACE_EXISTING
-            );
-
-            imageUrl = fileName;
+            String mimeType = image.getContentType() != null ? image.getContentType() : "image/jpeg";
+            String base64 = Base64.getEncoder().encodeToString(image.getBytes());
+            imageUrl = "data:" + mimeType + ";base64," + base64;
         }
 
         User user = userRepository
@@ -137,22 +119,9 @@ public class IssueService {
         String fileName = null;
 
         if (proofImage != null && !proofImage.isEmpty()) {
-
-            fileName =
-                    System.currentTimeMillis()
-                            + "_"
-                            + proofImage.getOriginalFilename();
-
-            Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads");
-            System.out.println(">>> Saving proof image to: " + uploadPath.toAbsolutePath());
-
-            Files.createDirectories(uploadPath);
-
-            Files.copy(
-                    proofImage.getInputStream(),
-                    uploadPath.resolve(fileName),
-                    StandardCopyOption.REPLACE_EXISTING
-            );
+            String mimeType = proofImage.getContentType() != null ? proofImage.getContentType() : "image/jpeg";
+            String base64 = Base64.getEncoder().encodeToString(proofImage.getBytes());
+            fileName = "data:" + mimeType + ";base64," + base64;
         }
 
         issue.setStatus("Resolved");

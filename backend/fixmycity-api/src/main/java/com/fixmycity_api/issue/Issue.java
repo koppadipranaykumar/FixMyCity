@@ -27,7 +27,10 @@ public class Issue {
     private String location;
     private String assignedWorker;
 
+    @Column(columnDefinition = "TEXT")
     private String resolutionNote;
+
+    @Column(columnDefinition = "TEXT")
     private String proofImage;
 
     private LocalDateTime reportedAt;
@@ -35,6 +38,7 @@ public class Issue {
 
     private String status;
 
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
 
     private Double latitude;
