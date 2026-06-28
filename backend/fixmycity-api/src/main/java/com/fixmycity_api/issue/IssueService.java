@@ -2,12 +2,14 @@ package com.fixmycity_api.issue;
 
 import com.fixmycity_api.user.User;
 import com.fixmycity_api.user.UserRepository;
+import com.fixmycity_api.issue.dto.IssueListDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class IssueService {
@@ -22,8 +24,14 @@ public class IssueService {
 
     // GET ALL ISSUES
 
-    public List<Issue> getAllIssues() {
-        return issueRepository.findAll();
+    public List<IssueListDTO> getAllIssues() {
+        return issueRepository.findAll().stream()
+                .map(IssueListDTO::from)
+                .collect(Collectors.toList());
+    }
+
+    public Issue getIssueById(Long id) {
+        return issueRepository.findById(id).orElseThrow();
     }
 
     // CREATE ISSUE
@@ -138,7 +146,9 @@ public class IssueService {
         issueRepository.deleteById(issueId);
     }
 
-    public List<Issue> getIssuesByUser(String email) {
-        return issueRepository.findByReportedBy(email);
+    public List<IssueListDTO> getIssuesByUser(String email) {
+        return issueRepository.findByReportedBy(email).stream()
+                .map(IssueListDTO::from)
+                .collect(Collectors.toList());
     }
 }

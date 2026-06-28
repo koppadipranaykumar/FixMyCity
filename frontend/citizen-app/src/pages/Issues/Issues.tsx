@@ -12,10 +12,13 @@ interface Issue {
   status: string;
   assignedWorker?: string;
   resolutionNote?: string;
-  proofImage?: string;
-  imageUrl?: string;
   latitude?: number;
   longitude?: number;
+}
+
+interface IssueDetail extends Issue {
+  imageUrl?: string;
+  proofImage?: string;
 }
 
 const categoryIcon: Record<string, string> = {
@@ -41,13 +44,24 @@ function Issues() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState(ALL);
   const [filterCategory, setFilterCategory] = useState(ALL);
-  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  const [selectedIssue, setSelectedIssue] = useState<IssueDetail | null>(null);
+  const [loadingDetail, setLoadingDetail] = useState(false);
+  // loadingDetail shows a spinner in the modal while fetching full issue with images
 
   useEffect(() => {
     axios.get(`${API_BASE_URL}/api/issues`)
       .then((r) => { setIssues(r.data); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
+
+  const openDetail = (issue: Issue) => {
+    setSelectedIssue(issue as IssueDetail);
+    setLoadingDetail(true);
+    axios.get(`${API_BASE_URL}/api/issues/${issue.id}`)
+      .then((r) => setSelectedIssue(r.data))
+      .catch(() => {})
+      .finally(() => setLoadingDetail(false));
+  };
 
   const getFullImageUrl = (pathString: string | undefined) => {
     if (!pathString) return "https://placehold.co/600x400?text=No+Image+Available";
@@ -171,7 +185,7 @@ function Issues() {
             return (
               <div className="issue-card" key={issue.id}>
                 <img
-                  src={getFullImageUrl(issue.imageUrl)}
+                  src="https://placehold.co/600x400?text=View+Details"
                   alt={issue.title}
                   className="issue-image"
                   onError={(e) => { 
@@ -196,7 +210,7 @@ function Issues() {
                   <button className="action-btn map-btn" onClick={() => openMap(issue)}>
                     🗺 View Map
                   </button>
-                  <button className="action-btn details-btn" onClick={() => setSelectedIssue(issue)}>
+                  <button className="action-btn details-btn" onClick={() => openDetail(issue)}>
                     Details →
                   </button>
                 </div>
@@ -214,15 +228,19 @@ function Issues() {
               <button className="modal-close" onClick={() => setSelectedIssue(null)}>✕</button>
             </div>
 
-            <img
-              src={getFullImageUrl(selectedIssue.imageUrl)}
-              alt={selectedIssue.title}
-              className="modal-image"
-              onError={(e) => { 
-                e.currentTarget.onerror = null; 
-                e.currentTarget.src = "https://placehold.co/600x400?text=No+Image+Available"; 
-              }}
-            />
+            {loadingDetail ? (
+              <div className="modal-image" style={{display:"flex",alignItems:"center",justifyContent:"center",background:"#f3f4f6",color:"#6b7280",fontSize:"0.95rem"}}>Loading image…</div>
+            ) : (
+              <img
+                src={getFullImageUrl(selectedIssue.imageUrl)}
+                alt={selectedIssue.title}
+                className="modal-image"
+                onError={(e) => { 
+                  e.currentTarget.onerror = null; 
+                  e.currentTarget.src = "https://placehold.co/600x400?text=No+Image+Available"; 
+                }}
+              />
+            )}
 
             <div className="modal-info">
               <div><span>Category</span>{selectedIssue.category}</div>

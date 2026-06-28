@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fixmycity_api.issue.dto.AssignWorkerRequest;
+import com.fixmycity_api.issue.dto.IssueListDTO;
 import com.fixmycity_api.issue.dto.ResolveIssueRequest;
 
 @RestController
@@ -82,21 +83,23 @@ public class IssueController {
                 );
     }
 
-    // GET ALL ISSUES
+    // GET ALL ISSUES (lightweight — no images)
 
     @GetMapping
-    public List<Issue> getAllIssues() {
+    public List<IssueListDTO> getAllIssues() {
         return issueService.getAllIssues();
     }
+
+    // GET SINGLE ISSUE (full — includes images)
+
+    @GetMapping("/{id}")
+    public Issue getIssueById(@PathVariable Long id) {
+        return issueService.getIssueById(id);
+    }
+
     @GetMapping("/my-reports/{email}")
-    public List<Issue> getMyReports(
-
-            @PathVariable String email
-
-    ) {
-
-        return issueService
-                .getIssuesByUser(email);
+    public List<IssueListDTO> getMyReports(@PathVariable String email) {
+        return issueService.getIssuesByUser(email);
     }
     // ASSIGN WORKER
 

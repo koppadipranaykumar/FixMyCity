@@ -10,11 +10,14 @@ interface Issue {
   category: string;
   location: string;
   status: string;
-  imageUrl?: string;
   latitude?: number;
   longitude?: number;
   assignedWorker?: string;
   resolutionNote?: string;
+}
+
+interface IssueDetail extends Issue {
+  imageUrl?: string;
   proofImage?: string;
 }
 interface Worker {
@@ -49,7 +52,9 @@ function Issues() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState(ALL);
   const [filterCategory, setFilterCategory] = useState(ALL);
-  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  const [selectedIssue, setSelectedIssue] = useState<IssueDetail | null>(null);
+  const [loadingDetail, setLoadingDetail] = useState(false);
+  // loadingDetail tracks when a full issue detail (with images) is being fetched
   const [worker, setWorker] = useState("");
   const [resolutionNote, setResolutionNote] = useState("");
   const [proofImage, setProofImage] = useState<File | null>(null);
@@ -272,7 +277,7 @@ function Issues() {
                     <td className="cell-id">#{issue.id}</td>
                     <td>
                       <img
-                        src={issue.imageUrl?.startsWith("data:") ? issue.imageUrl : "/placeholder.jpg"}
+                        src="/placeholder.jpg"
                         alt={issue.title}
                         className="table-thumb"
                       />
@@ -296,10 +301,15 @@ function Issues() {
                         <button
                           className="action-btn view-btn"
                           onClick={() => {
-                            setSelectedIssue(issue);
+                            setSelectedIssue(issue as IssueDetail);
                             setWorker(issue.assignedWorker || "");
                             setResolutionNote(issue.resolutionNote || "");
                             setProofImage(null);
+                            setLoadingDetail(true);
+                            axios.get(`${API_BASE_URL}/api/issues/${issue.id}`)
+                              .then((r) => setSelectedIssue(r.data))
+                              .catch(() => {})
+                              .finally(() => setLoadingDetail(false));
                           }}
                         >
                           View
@@ -335,11 +345,15 @@ function Issues() {
 
               {/* Top: image + summary side by side */}
               <div className="modal-summary-row">
-                <img
-                  src={selectedIssue.imageUrl?.startsWith("data:") ? selectedIssue.imageUrl : "/placeholder.jpg"}
-                  alt={selectedIssue.title}
-                  className="modal-thumb"
-                />
+                {loadingDetail ? (
+                  <div className="modal-thumb" style={{display:"flex",alignItems:"center",justifyContent:"center",background:"#f3f4f6",color:"#6b7280",fontSize:"0.85rem"}}>Loading…</div>
+                ) : (
+                  <img
+                    src={selectedIssue.imageUrl?.startsWith("data:") ? selectedIssue.imageUrl : "/placeholder.jpg"}
+                    alt={selectedIssue.title}
+                    className="modal-thumb"
+                  />
+                )}
                 <div className="modal-summary-text">
                   <div className="modal-cat-row">
                     <span>{categoryIcon[selectedIssue.category] ?? "•"}</span>
