@@ -110,7 +110,7 @@ function Navbar() {
           to="/community"
           className={`nav-link ${isActive("/community") ? "active" : ""}`}
         >
-          Contact
+          Community
         </Link>
       </div>
 
